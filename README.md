@@ -206,4 +206,4 @@ namespace ExampleNamespace
 
 ## Documentation
 
--   [API docs](https://github.com/pixelbin-dev/pixelbin-csharp-sdk)
+-   [API docs](/documentation/platform/README.md)
