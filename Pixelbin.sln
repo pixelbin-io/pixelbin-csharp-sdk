@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 25.0.1705.2
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pixelbin", "Pixelbin\Pixelbin.csproj", "{CE010F0D-E065-43FA-B2EF-17AD30A70D7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{B9A1FD27-D416-421E-B6B0-AFAAEF97FDAB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CE010F0D-E065-43FA-B2EF-17AD30A70D7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE010F0D-E065-43FA-B2EF-17AD30A70D7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE010F0D-E065-43FA-B2EF-17AD30A70D7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE010F0D-E065-43FA-B2EF-17AD30A70D7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9A1FD27-D416-421E-B6B0-AFAAEF97FDAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9A1FD27-D416-421E-B6B0-AFAAEF97FDAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9A1FD27-D416-421E-B6B0-AFAAEF97FDAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9A1FD27-D416-421E-B6B0-AFAAEF97FDAB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7E3A26A6-EDB9-4AB8-9E2A-F80178565BC4}
+	EndGlobalSection
+EndGlobal
