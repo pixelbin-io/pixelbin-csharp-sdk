@@ -11,7 +11,7 @@
         <PackageTags>Pixelbin</PackageTags>
         <PackageIcon>Pixelbin.jpeg</PackageIcon>
         <PackageProjectUrl>https://www.pixelbin.io/</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/pixelbin-dev/pixelbin-csharp-sdk.git</RepositoryUrl>
+        <RepositoryUrl>https://github.com/pixelbin-io/pixelbin-csharp-sdk.git</RepositoryUrl>
         <RepositoryType>github</RepositoryType>
         <Nullable>enable</Nullable>
     </PropertyGroup>
