@@ -32,7 +32,7 @@ namespace ExampleNamespace
     {
         async void Main(string[] args)
         {
-            // Create a config with you API_TOKEN
+            // Create a config with your API_TOKEN
             PixelbinConfig config = new PixelbinConfig(
                 new Dictionary<string, string>() {
                     { "domain", "https://api.pixelbin.io" },
@@ -258,4 +258,4 @@ namespace ExampleNamespace
 
 ## Documentation
 
--   [API docs](https://github.com/pixelbin-dev/pixelbin-csharp-sdk)
+-   [API docs](https://github.com/pixelbin-io/pixelbin-csharp-sdk/blob/main/documentation/platform/README.md)
