@@ -697,8 +697,6 @@ namespace PixelbinTest
                 "dummy-token"
             );
 
-            Console.WriteLine(signedURL);
-
             Uri signedUrlObj = new Uri(signedURL);
             NameValueCollection searchParams = HttpUtility.ParseQueryString(signedUrlObj.Query);
 

@@ -12,10 +12,14 @@ namespace Pixelbin.Platform.Models
     public class AddPresetResponse
     {
         
-        public string presetName { get; set; }
-        public string transformation { get; set; }
+        public string? presetName { get; set; }
+        public string? transformation { get; set; }
         public Dictionary<string, object>? @params { get; set; }
         public bool? archived { get; set; }
+        public int? orgId { get; set; }
+        public bool? isActive { get; set; }
+        public string? createdAt { get; set; }
+        public string? updatedAt { get; set; }
 
         public override string ToString() {
             return JsonConvert.SerializeObject(this);

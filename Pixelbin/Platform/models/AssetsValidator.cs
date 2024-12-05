@@ -10,32 +10,19 @@ namespace Pixelbin.Platform.Models.Validators
 {
     internal class AssetsValidator
     {
-        public class fileUpload
+        public class addCredentials
         {
             // No properties required
         }
         
-        public class urlUpload
+        public class updateCredentials
         {
-            // No properties required
+            public string? pluginId { get; set; }
         }
         
-        public class createSignedUrl
+        public class deleteCredentials
         {
-            // No properties required
-        }
-        
-        public class listFiles
-        {
-            public string? name { get; set; }
-            public string? path { get; set; }
-            public string? format { get; set; }
-            public List<string>? tags { get; set; }
-            public bool? onlyFiles { get; set; }
-            public bool? onlyFolders { get; set; }
-            public int? pageNo { get; set; }
-            public int? pageSize { get; set; }
-            public string? sort { get; set; }
+            public string? pluginId { get; set; }
         }
         
         public class getFileById
@@ -89,19 +76,32 @@ namespace Pixelbin.Platform.Models.Validators
             public string? _id { get; set; }
         }
         
-        public class addCredentials
+        public class listFiles
+        {
+            public string? name { get; set; }
+            public string? path { get; set; }
+            public string? format { get; set; }
+            public List<string>? tags { get; set; }
+            public bool? onlyFiles { get; set; }
+            public bool? onlyFolders { get; set; }
+            public int? pageNo { get; set; }
+            public int? pageSize { get; set; }
+            public string? sort { get; set; }
+        }
+        
+        public class getDefaultAssetForPlayground
         {
             // No properties required
         }
         
-        public class updateCredentials
+        public class getModules
         {
-            public string? pluginId { get; set; }
+            // No properties required
         }
         
-        public class deleteCredentials
+        public class getModule
         {
-            public string? pluginId { get; set; }
+            public string? identifier { get; set; }
         }
         
         public class addPreset
@@ -111,7 +111,12 @@ namespace Pixelbin.Platform.Models.Validators
         
         public class getPresets
         {
-            // No properties required
+            public int? pageNo { get; set; }
+            public int? pageSize { get; set; }
+            public string? name { get; set; }
+            public string? transformation { get; set; }
+            public bool? archived { get; set; }
+            public List<string>? sort { get; set; }
         }
         
         public class updatePreset
@@ -129,19 +134,24 @@ namespace Pixelbin.Platform.Models.Validators
             public string? presetName { get; set; }
         }
         
-        public class getDefaultAssetForPlayground
+        public class fileUpload
         {
             // No properties required
         }
         
-        public class getModules
+        public class urlUpload
         {
             // No properties required
         }
         
-        public class getModule
+        public class createSignedUrl
         {
-            public string? identifier { get; set; }
+            // No properties required
+        }
+        
+        public class createSignedUrlV2
+        {
+            // No properties required
         }
     }
 }

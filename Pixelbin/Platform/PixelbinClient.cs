@@ -39,70 +39,23 @@ namespace Pixelbin.Platform
         }
          
         /// <summary>
-        /// Upload File
+        /// Add credentials for a transformation module.
         /// </summary>
         /// <remarks>
-        /// Upload File to Pixelbin
+        /// Add a transformation modules's credentials for an organization. 
         /// </remarks>
-        /// <param name="file">Asset file</param>
-        /// <param name="path">Path where you want to store the asset. Path of containing folder</param>
-        /// <param name="name">Name of the asset, if not provided name of the file will be used. Note - The provided name will be slugified to make it URL safe</param>
-        /// <param name="access">Access level of asset, can be either `public-read` or `private`</param>
-        /// <param name="tags">Asset tags</param>
-        /// <param name="metadata">Asset related metadata</param>
-        /// <param name="overwrite">Overwrite flag. If set to `true` will overwrite any file that exists with same path, name and type. Defaults to `false`.</param>
-        /// <param name="filenameOverride">If set to `true` will add unique characters to name if asset with given name already exists. If overwrite flag is set to `true`, preference will be given to overwrite flag. If both are set to `false` an error will be raised.</param>
-        public async Task<UploadResponse?> fileUploadAsync(
-            FileStream file, 
-            string? path = null, 
-            string? name = null, 
-            AccessEnum? access = null, 
-            List<string>? tags = null, 
-            Dictionary<string, object>? metadata = null, 
-            bool? overwrite = null, 
-            bool? filenameOverride = null
+        /// <param name="credentials">Credentials of the plugin</param>
+        /// <param name="pluginId">Unique identifier for the plugin this credential belongs to</param>
+        public async Task<AddCredentialsResponse?> addCredentialsAsync(
+            Dictionary<string, object> credentials, 
+            string pluginId
         )
         { 
     
             // Body
-            var body = new FileUploadRequest();
+            var body = new AddCredentialsRequest();
     
-            body.file = (FileStream)file;
-    
-            if (path != null)
-            { 
-                body.path = (string)path;
-            }
-    
-            if (name != null)
-            { 
-                body.name = (string)name;
-            }
-    
-            if (access != null)
-            { 
-                body.access = (AccessEnum)access;
-            }
-    
-            if (tags != null)
-            { 
-                body.tags = (List<string>)tags;
-            }
-    
-            if (metadata != null)
-            { 
-                body.metadata = (Dictionary<string, object>)metadata;
-            }
-    
-            if (overwrite != null)
-            { 
-                body.overwrite = (bool)overwrite;
-            }
-    
-            if (filenameOverride != null)
-            { 
-                body.filenameOverride = (bool)filenameOverride;
-            }
+            body.credentials = (Dictionary<string, object>)credentials;body.pluginId = (string)pluginId;
     
             // Body Validation
             JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
@@ -110,115 +63,7 @@ namespace Pixelbin.Platform
             var response = await ApiClient.Execute(
                 _configuration,
                 "post",
-                string.Format($"/service/platform/assets/v1.0/upload/direct"),
-                null,
-                body,
-                "multipart/form-data"
-            );
-    
-            if ((int)response["status_code"] != 200)
-            {
-                throw new PixelbinServerResponseError(response["content"].ToString());
-            }
-            return JsonConvert.DeserializeObject<UploadResponse>(response["content"].ToString());
-        }
-    
-        public UploadResponse? fileUpload(
-            FileStream file, 
-            string? path = null, 
-            string? name = null, 
-            AccessEnum? access = null, 
-            List<string>? tags = null, 
-            Dictionary<string, object>? metadata = null, 
-            bool? overwrite = null, 
-            bool? filenameOverride = null
-        )
-        {
-            return Task.Run(() => fileUploadAsync(
-            file:file, 
-            path:path, 
-            name:name, 
-            access:access, 
-            tags:tags, 
-            metadata:metadata, 
-            overwrite:overwrite, 
-            filenameOverride:filenameOverride)).GetAwaiter().GetResult();
-        }
-    
-     
-        /// <summary>
-        /// Upload Asset with url
-        /// </summary>
-        /// <remarks>
-        /// Upload Asset with url
-        /// </remarks>
-        /// <param name="url">Asset URL</param>
-        /// <param name="path">Path where you want to store the asset. Path of containing folder.</param>
-        /// <param name="name">Name of the asset, if not provided name of the file will be used. Note - The provided name will be slugified to make it URL safe</param>
-        /// <param name="access">Access level of asset, can be either `public-read` or `private`</param>
-        /// <param name="tags">Asset tags</param>
-        /// <param name="metadata">Asset related metadata</param>
-        /// <param name="overwrite">Overwrite flag. If set to `true` will overwrite any file that exists with same path, name and type. Defaults to `false`.</param>
-        /// <param name="filenameOverride">If set to `true` will add unique characters to name if asset with given name already exists. If overwrite flag is set to `true`, preference will be given to overwrite flag. If both are set to `false` an error will be raised.</param>
-        public async Task<UploadResponse?> urlUploadAsync(
-            string url, 
-            string? path = null, 
-            string? name = null, 
-            AccessEnum? access = null, 
-            List<string>? tags = null, 
-            Dictionary<string, object>? metadata = null, 
-            bool? overwrite = null, 
-            bool? filenameOverride = null
-        )
-        { 
-    
-            // Body
-            var body = new UrlUploadRequest();
-    
-            body.url = (string)url;
-    
-            if (path != null)
-            { 
-                body.path = (string)path;
-            }
-    
-            if (name != null)
-            { 
-                body.name = (string)name;
-            }
-    
-            if (access != null)
-            { 
-                body.access = (AccessEnum)access;
-            }
-    
-            if (tags != null)
-            { 
-                body.tags = (List<string>)tags;
-            }
-    
-            if (metadata != null)
-            { 
-                body.metadata = (Dictionary<string, object>)metadata;
-            }
-    
-            if (overwrite != null)
-            { 
-                body.overwrite = (bool)overwrite;
-            }
-    
-            if (filenameOverride != null)
-            { 
-                body.filenameOverride = (bool)filenameOverride;
-            }
-    
-            // Body Validation
-            JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
-    
-            var response = await ApiClient.Execute(
-                _configuration,
-                "post",
-                string.Format($"/service/platform/assets/v1.0/upload/url"),
+                string.Format($"/service/platform/assets/v1.0/credentials"),
                 null,
                 body,
                 "application/json"
@@ -228,257 +73,94 @@ namespace Pixelbin.Platform
             {
                 throw new PixelbinServerResponseError(response["content"].ToString());
             }
-            return JsonConvert.DeserializeObject<UploadResponse>(response["content"].ToString());
+            return JsonConvert.DeserializeObject<AddCredentialsResponse>(response["content"].ToString());
         }
     
-        public UploadResponse? urlUpload(
-            string url, 
-            string? path = null, 
-            string? name = null, 
-            AccessEnum? access = null, 
-            List<string>? tags = null, 
-            Dictionary<string, object>? metadata = null, 
-            bool? overwrite = null, 
-            bool? filenameOverride = null
+        public AddCredentialsResponse? addCredentials(
+            Dictionary<string, object> credentials, 
+            string pluginId
         )
         {
-            return Task.Run(() => urlUploadAsync(
-            url:url, 
-            path:path, 
-            name:name, 
-            access:access, 
-            tags:tags, 
-            metadata:metadata, 
-            overwrite:overwrite, 
-            filenameOverride:filenameOverride)).GetAwaiter().GetResult();
+            return Task.Run(() => addCredentialsAsync(
+            credentials:credentials, 
+            pluginId:pluginId)).GetAwaiter().GetResult();
         }
     
      
         /// <summary>
-        /// S3 Signed URL upload
+        /// Update credentials of a transformation module.
         /// </summary>
         /// <remarks>
-        /// For the given asset details, a S3 signed URL will be generated, which can be then used to upload your asset. 
+        /// Update credentials of a transformation module, for an organization. 
         /// </remarks>
-        /// <param name="name">name of the file</param>
-        /// <param name="path">Path of containing folder.</param>
-        /// <param name="format">Format of the file</param>
-        /// <param name="access">Access level of asset, can be either `public-read` or `private`</param>
-        /// <param name="tags">Tags associated with the file.</param>
-        /// <param name="metadata">Metadata associated with the file.</param>
-        /// <param name="overwrite">Overwrite flag. If set to `true` will overwrite any file that exists with same path, name and type. Defaults to `false`.</param>
-        /// <param name="filenameOverride">If set to `true` will add unique characters to name if asset with given name already exists. If overwrite flag is set to `true`, preference will be given to overwrite flag. If both are set to `false` an error will be raised.</param>
-        public async Task<SignedUploadResponse?> createSignedUrlAsync(
-            string? name = null, 
-            string? path = null, 
-            string? format = null, 
-            AccessEnum? access = null, 
-            List<string>? tags = null, 
-            Dictionary<string, object>? metadata = null, 
-            bool? overwrite = null, 
-            bool? filenameOverride = null
-        )
-        { 
-    
-            // Body
-            var body = new SignedUploadRequest();
-    
-            if (name != null)
-            { 
-                body.name = (string)name;
-            }if (path != null)
-            { 
-                body.path = (string)path;
-            }if (format != null)
-            { 
-                body.format = (string)format;
-            }if (access != null)
-            { 
-                body.access = (AccessEnum)access;
-            }if (tags != null)
-            { 
-                body.tags = (List<string>)tags;
-            }if (metadata != null)
-            { 
-                body.metadata = (Dictionary<string, object>)metadata;
-            }if (overwrite != null)
-            { 
-                body.overwrite = (bool)overwrite;
-            }if (filenameOverride != null)
-            { 
-                body.filenameOverride = (bool)filenameOverride;
-            }
-    
-            // Body Validation
-            JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
-    
-            var response = await ApiClient.Execute(
-                _configuration,
-                "post",
-                string.Format($"/service/platform/assets/v1.0/upload/signed-url"),
-                null,
-                body,
-                "application/json"
-            );
-    
-            if ((int)response["status_code"] != 200)
-            {
-                throw new PixelbinServerResponseError(response["content"].ToString());
-            }
-            return JsonConvert.DeserializeObject<SignedUploadResponse>(response["content"].ToString());
-        }
-    
-        public SignedUploadResponse? createSignedUrl(
-            string? name = null, 
-            string? path = null, 
-            string? format = null, 
-            AccessEnum? access = null, 
-            List<string>? tags = null, 
-            Dictionary<string, object>? metadata = null, 
-            bool? overwrite = null, 
-            bool? filenameOverride = null
-        )
-        {
-            return Task.Run(() => createSignedUrlAsync(
-            name:name, 
-            path:path, 
-            format:format, 
-            access:access, 
-            tags:tags, 
-            metadata:metadata, 
-            overwrite:overwrite, 
-            filenameOverride:filenameOverride)).GetAwaiter().GetResult();
-        }
-    
-    
-        /// <summary>
-        /// List and search files and folders.
-        /// </summary>
-        /// <remarks>
-        /// List all files and folders in root folder. Search for files if name is provided. If path is provided, search in the specified path. 
-        /// </remarks>
-        /// <param name="name">Find items with matching name</param>
-        /// <param name="path">Find items with matching path</param>
-        /// <param name="format">Find items with matching format</param>
-        /// <param name="tags">Find items containing these tags</param>
-        /// <param name="onlyFiles">If true will fetch only files</param>
-        /// <param name="onlyFolders">If true will fetch only folders</param>
-        /// <param name="pageNo">Page No.</param>
-        /// <param name="pageSize">Page Size</param>
-        /// <param name="sort">Key to sort results by. A "-" suffix will sort results in descending orders. </param>
-        public async Task<ListFilesResponse?> listFilesAsync(
-            string? name = null,
-            string? path = null,
-            string? format = null,
-            List<string>? tags = null,
-            bool? onlyFiles = null,
-            bool? onlyFolders = null,
-            int? pageNo = null,
-            int? pageSize = null,
-            string? sort = null
+        /// <param name="pluginId">ID of the plugin whose credentials are being updated</param>
+        /// <param name="credentials">Credentials of the plugin</param>
+        public async Task<AddCredentialsResponse?> updateCredentialsAsync(
+            string pluginId,
+            Dictionary<string, object> credentials
         )
         { 
             // Payload
             var payload = new Dictionary<string, object>();
     
-            if (name != null)
-            {
-                payload.Add("name", name);
-            }
+            payload.Add("pluginId", pluginId);
     
-            if (path != null)
-            {
-                payload.Add("path", path);
-            }
+            // Body
+            var body = new UpdateCredentialsRequest();
     
-            if (format != null)
-            {
-                payload.Add("format", format);
-            }
+            body.credentials = (Dictionary<string, object>)credentials;
     
-            if (tags != null)
-            {
-                payload.Add("tags", tags);
-            }
+            // Body Validation
+            JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
     
-            if (onlyFiles != null)
-            {
-                payload.Add("onlyFiles", onlyFiles);
-            }
+            var response = await ApiClient.Execute(
+                _configuration,
+                "patch",
+                string.Format($"/service/platform/assets/v1.0/credentials/{pluginId}"),
+                null,
+                body,
+                "application/json"
+            );
     
-            if (onlyFolders != null)
+            if ((int)response["status_code"] != 200)
             {
-                payload.Add("onlyFolders", onlyFolders);
+                throw new PixelbinServerResponseError(response["content"].ToString());
             }
+            return JsonConvert.DeserializeObject<AddCredentialsResponse>(response["content"].ToString());
+        }
     
-            if (pageNo != null)
-            {
-                payload.Add("pageNo", pageNo);
-            }
+        public AddCredentialsResponse? updateCredentials(
+            string pluginId,
+            Dictionary<string, object> credentials
+        )
+        {
+            return Task.Run(() => updateCredentialsAsync(
+            pluginId:pluginId,
+            credentials:credentials)).GetAwaiter().GetResult();
+        }
     
-            if (pageSize != null)
-            {
-                payload.Add("pageSize", pageSize);
-            }
     
-            if (sort != null)
-            {
-                payload.Add("sort", sort);
-            }
+        /// <summary>
+        /// Delete credentials of a transformation module.
+        /// </summary>
+        /// <remarks>
+        /// Delete credentials of a transformation module, for an organization. 
+        /// </remarks>
+        /// <param name="pluginId">ID of the plugin whose credentials are being deleted</param>
+        public async Task<AddCredentialsResponse?> deleteCredentialsAsync(
+            string pluginId
+        )
+        { 
+            // Payload
+            var payload = new Dictionary<string, object>();
     
-            // Params
-            var query_params = new Dictionary<string, object>();
-            
-            if (name != null)
-            {
-                query_params.Add("name", name);
-            }
-            
-            if (path != null)
-            {
-                query_params.Add("path", path);
-            }
-            
-            if (format != null)
-            {
-                query_params.Add("format", format);
-            }
-            
-            if (tags != null)
-            {
-                query_params.Add("tags", tags);
-            }
-            
-            if (onlyFiles != null)
-            {
-                query_params.Add("onlyFiles", onlyFiles);
-            }
-            
-            if (onlyFolders != null)
-            {
-                query_params.Add("onlyFolders", onlyFolders);
-            }
-            
-            if (pageNo != null)
-            {
-                query_params.Add("pageNo", pageNo);
-            }
-            
-            if (pageSize != null)
-            {
-                query_params.Add("pageSize", pageSize);
-            }
-            
-            if (sort != null)
-            {
-                query_params.Add("sort", sort);
-            }
+            payload.Add("pluginId", pluginId);
     
             var response = await ApiClient.Execute<object>(
                 _configuration,
-                "get",
-                string.Format($"/service/platform/assets/v1.0/listFiles"),
-                query_params,
+                "delete",
+                string.Format($"/service/platform/assets/v1.0/credentials/{pluginId}"),
+                null,
                 null,
                 ""
             );
@@ -487,31 +169,15 @@ namespace Pixelbin.Platform
             {
                 throw new PixelbinServerResponseError(response["content"].ToString());
             }
-            return JsonConvert.DeserializeObject<ListFilesResponse>(response["content"].ToString());
+            return JsonConvert.DeserializeObject<AddCredentialsResponse>(response["content"].ToString());
         }
     
-        public ListFilesResponse? listFiles(
-            string? name = null,
-            string? path = null,
-            string? format = null,
-            List<string>? tags = null,
-            bool? onlyFiles = null,
-            bool? onlyFolders = null,
-            int? pageNo = null,
-            int? pageSize = null,
-            string? sort = null
+        public AddCredentialsResponse? deleteCredentials(
+            string pluginId
         )
         {
-            return Task.Run(() => listFilesAsync(
-            name:name, 
-            path:path, 
-            format:format, 
-            tags:tags, 
-            onlyFiles:onlyFiles, 
-            onlyFolders:onlyFolders, 
-            pageNo:pageNo, 
-            pageSize:pageSize, 
-            sort:sort)).GetAwaiter().GetResult();
+            return Task.Run(() => deleteCredentialsAsync(
+            pluginId:pluginId)).GetAwaiter().GetResult();
         }
     
     
@@ -596,7 +262,7 @@ namespace Pixelbin.Platform
         /// </summary>
         /// <param name="fileId">Combination of `path` and `name`</param>
         /// <param name="name">Name of the file</param>
-        /// <param name="path">path of containing folder.</param>
+        /// <param name="path">Path of the file</param>
         /// <param name="access">Access level of asset, can be either `public-read` or `private`</param>
         /// <param name="isActive">Whether the file is active</param>
         /// <param name="tags">Tags associated with the file</param>
@@ -605,7 +271,7 @@ namespace Pixelbin.Platform
             string fileId,
             string? name = null, 
             string? path = null, 
-            string? access = null, 
+            AccessEnum? access = null, 
             bool? isActive = null, 
             List<string>? tags = null, 
             Dictionary<string, object>? metadata = null
@@ -627,7 +293,7 @@ namespace Pixelbin.Platform
                 body.path = (string)path;
             }if (access != null)
             { 
-                body.access = (string)access;
+                body.access = (AccessEnum)access;
             }if (isActive != null)
             { 
                 body.isActive = (bool)isActive;
@@ -662,7 +328,7 @@ namespace Pixelbin.Platform
             string fileId,
             string? name = null, 
             string? path = null, 
-            string? access = null, 
+            AccessEnum? access = null, 
             bool? isActive = null, 
             List<string>? tags = null, 
             Dictionary<string, object>? metadata = null
@@ -766,7 +432,7 @@ namespace Pixelbin.Platform
         /// Create a new folder at the specified path. Also creates the ancestors if they do not exist. 
         /// </remarks>
         /// <param name="name">Name of the folder</param>
-        /// <param name="path">path of containing folder.</param>
+        /// <param name="path">Path of the folder</param>
         public async Task<FoldersResponse?> createFolderAsync(
             string name, 
             string? path = null
@@ -1016,129 +682,184 @@ namespace Pixelbin.Platform
             _id:_id)).GetAwaiter().GetResult();
         }
     
-     
+    
         /// <summary>
-        /// Add credentials for a transformation module.
+        /// List and search files and folders.
         /// </summary>
         /// <remarks>
-        /// Add a transformation modules's credentials for an organization. 
+        /// List all files and folders in root folder. Search for files if name is provided. If path is provided, search in the specified path. 
         /// </remarks>
-        /// <param name="credentials">Credentials of the plugin</param>
-        /// <param name="pluginId">Unique identifier for the plugin this credential belongs to</param>
-        public async Task<AddCredentialsResponse?> addCredentialsAsync(
-            Dictionary<string, object> credentials, 
-            string pluginId
-        )
-        { 
-    
-            // Body
-            var body = new AddCredentialsRequest();
-    
-            body.credentials = (Dictionary<string, object>)credentials;body.pluginId = (string)pluginId;
-    
-            // Body Validation
-            JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
-    
-            var response = await ApiClient.Execute(
-                _configuration,
-                "post",
-                string.Format($"/service/platform/assets/v1.0/credentials"),
-                null,
-                body,
-                "application/json"
-            );
-    
-            if ((int)response["status_code"] != 200)
-            {
-                throw new PixelbinServerResponseError(response["content"].ToString());
-            }
-            return JsonConvert.DeserializeObject<AddCredentialsResponse>(response["content"].ToString());
-        }
-    
-        public AddCredentialsResponse? addCredentials(
-            Dictionary<string, object> credentials, 
-            string pluginId
-        )
-        {
-            return Task.Run(() => addCredentialsAsync(
-            credentials:credentials, 
-            pluginId:pluginId)).GetAwaiter().GetResult();
-        }
-    
-     
-        /// <summary>
-        /// Update credentials of a transformation module.
-        /// </summary>
-        /// <remarks>
-        /// Update credentials of a transformation module, for an organization. 
-        /// </remarks>
-        /// <param name="pluginId">ID of the plugin whose credentials are being updated</param>
-        /// <param name="credentials">Credentials of the plugin</param>
-        public async Task<AddCredentialsResponse?> updateCredentialsAsync(
-            string pluginId,
-            Dictionary<string, object> credentials
+        /// <param name="name">Find items with matching name</param>
+        /// <param name="path">Find items with matching path</param>
+        /// <param name="format">Find items with matching format</param>
+        /// <param name="tags">Find items containing these tags</param>
+        /// <param name="onlyFiles">If true will fetch only files</param>
+        /// <param name="onlyFolders">If true will fetch only folders</param>
+        /// <param name="pageNo">Page No.</param>
+        /// <param name="pageSize">Page Size</param>
+        /// <param name="sort">Key to sort results by. A "-" suffix will sort results in descending orders. </param>
+        public async Task<ListFilesResponse?> listFilesAsync(
+            string? name = null,
+            string? path = null,
+            string? format = null,
+            List<string>? tags = null,
+            bool? onlyFiles = null,
+            bool? onlyFolders = null,
+            int? pageNo = null,
+            int? pageSize = null,
+            string? sort = null
         )
         { 
             // Payload
             var payload = new Dictionary<string, object>();
     
-            payload.Add("pluginId", pluginId);
-    
-            // Body
-            var body = new UpdateCredentialsRequest();
-    
-            body.credentials = (Dictionary<string, object>)credentials;
-    
-            // Body Validation
-            JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
-    
-            var response = await ApiClient.Execute(
-                _configuration,
-                "patch",
-                string.Format($"/service/platform/assets/v1.0/credentials/{pluginId}"),
-                null,
-                body,
-                "application/json"
-            );
-    
-            if ((int)response["status_code"] != 200)
+            if (name != null)
             {
-                throw new PixelbinServerResponseError(response["content"].ToString());
+                payload.Add("name", name);
             }
-            return JsonConvert.DeserializeObject<AddCredentialsResponse>(response["content"].ToString());
-        }
     
-        public AddCredentialsResponse? updateCredentials(
-            string pluginId,
-            Dictionary<string, object> credentials
-        )
-        {
-            return Task.Run(() => updateCredentialsAsync(
-            pluginId:pluginId,
-            credentials:credentials)).GetAwaiter().GetResult();
-        }
+            if (path != null)
+            {
+                payload.Add("path", path);
+            }
     
+            if (format != null)
+            {
+                payload.Add("format", format);
+            }
     
-        /// <summary>
-        /// Delete credentials of a transformation module.
-        /// </summary>
-        /// <remarks>
-        /// Delete credentials of a transformation module, for an organization. 
-        /// </remarks>
-        /// <param name="pluginId">ID of the plugin whose credentials are being deleted</param>
-        public async Task<AddCredentialsResponse?> deleteCredentialsAsync(
-            string pluginId
-        )
-        { 
-            // Payload
-            var payload = new Dictionary<string, object>();
+            if (tags != null)
+            {
+                payload.Add("tags", tags);
+            }
     
-            payload.Add("pluginId", pluginId);
+            if (onlyFiles != null)
+            {
+                payload.Add("onlyFiles", onlyFiles);
+            }
+    
+            if (onlyFolders != null)
+            {
+                payload.Add("onlyFolders", onlyFolders);
+            }
+    
+            if (pageNo != null)
+            {
+                payload.Add("pageNo", pageNo);
+            }
+    
+            if (pageSize != null)
+            {
+                payload.Add("pageSize", pageSize);
+            }
+    
+            if (sort != null)
+            {
+                payload.Add("sort", sort);
+            }
+    
+            // Params
+            var query_params = new Dictionary<string, object>();
+            
+            if (name != null)
+            {
+                query_params.Add("name", name);
+            }
+            
+            if (path != null)
+            {
+                query_params.Add("path", path);
+            }
+            
+            if (format != null)
+            {
+                query_params.Add("format", format);
+            }
+            
+            if (tags != null)
+            {
+                query_params.Add("tags", tags);
+            }
+            
+            if (onlyFiles != null)
+            {
+                query_params.Add("onlyFiles", onlyFiles);
+            }
+            
+            if (onlyFolders != null)
+            {
+                query_params.Add("onlyFolders", onlyFolders);
+            }
+            
+            if (pageNo != null)
+            {
+                query_params.Add("pageNo", pageNo);
+            }
+            
+            if (pageSize != null)
+            {
+                query_params.Add("pageSize", pageSize);
+            }
+            
+            if (sort != null)
+            {
+                query_params.Add("sort", sort);
+            }
     
             var response = await ApiClient.Execute<object>(
                 _configuration,
-                "delete",
-                string.Format($"/service/platform/assets/v1.0/credentials/{pluginId}"),
+                "get",
+                string.Format($"/service/platform/assets/v1.0/listFiles"),
+                query_params,
+                null,
+                ""
+            );
+    
+            if ((int)response["status_code"] != 200)
+            {
+                throw new PixelbinServerResponseError(response["content"].ToString());
+            }
+            return JsonConvert.DeserializeObject<ListFilesResponse>(response["content"].ToString());
+        }
+    
+        public ListFilesResponse? listFiles(
+            string? name = null,
+            string? path = null,
+            string? format = null,
+            List<string>? tags = null,
+            bool? onlyFiles = null,
+            bool? onlyFolders = null,
+            int? pageNo = null,
+            int? pageSize = null,
+            string? sort = null
+        )
+        {
+            return Task.Run(() => listFilesAsync(
+            name:name, 
+            path:path, 
+            format:format, 
+            tags:tags, 
+            onlyFiles:onlyFiles, 
+            onlyFolders:onlyFolders, 
+            pageNo:pageNo, 
+            pageSize:pageSize, 
+            sort:sort)).GetAwaiter().GetResult();
+        }
+    
+    
+        /// <summary>
+        /// Get default asset for playground
+        /// </summary>
+        /// <remarks>
+        /// Get default asset for playground
+        /// </remarks>
+        public async Task<UploadResponse?> getDefaultAssetForPlaygroundAsync()
+        { 
+    
+            var response = await ApiClient.Execute<object>(
+                _configuration,
+                "get",
+                string.Format($"/service/platform/assets/v1.0/playground/default"),
                 null,
                 null,
                 ""
@@ -1148,15 +869,84 @@ namespace Pixelbin.Platform
             {
                 throw new PixelbinServerResponseError(response["content"].ToString());
             }
-            return JsonConvert.DeserializeObject<AddCredentialsResponse>(response["content"].ToString());
+            return JsonConvert.DeserializeObject<UploadResponse>(response["content"].ToString());
         }
     
-        public AddCredentialsResponse? deleteCredentials(
-            string pluginId
+        public UploadResponse? getDefaultAssetForPlayground()
+        {
+            return Task.Run(() => getDefaultAssetForPlaygroundAsync()).GetAwaiter().GetResult();
+        }
+    
+    
+        /// <summary>
+        /// Get all transformation modules
+        /// </summary>
+        /// <remarks>
+        /// Get all transformation modules. 
+        /// </remarks>
+        public async Task<TransformationModulesResponse?> getModulesAsync()
+        { 
+    
+            var response = await ApiClient.Execute<object>(
+                _configuration,
+                "get",
+                string.Format($"/service/platform/assets/v1.0/playground/plugins"),
+                null,
+                null,
+                ""
+            );
+    
+            if ((int)response["status_code"] != 200)
+            {
+                throw new PixelbinServerResponseError(response["content"].ToString());
+            }
+            return JsonConvert.DeserializeObject<TransformationModulesResponse>(response["content"].ToString());
+        }
+    
+        public TransformationModulesResponse? getModules()
+        {
+            return Task.Run(() => getModulesAsync()).GetAwaiter().GetResult();
+        }
+    
+    
+        /// <summary>
+        /// Get Transformation Module by module identifier
+        /// </summary>
+        /// <remarks>
+        /// Get Transformation Module by module identifier 
+        /// </remarks>
+        /// <param name="identifier">identifier of Transformation Module</param>
+        public async Task<TransformationModuleResponse?> getModuleAsync(
+            string identifier
+        )
+        { 
+            // Payload
+            var payload = new Dictionary<string, object>();
+    
+            payload.Add("identifier", identifier);
+    
+            var response = await ApiClient.Execute<object>(
+                _configuration,
+                "get",
+                string.Format($"/service/platform/assets/v1.0/playground/plugins/{identifier}"),
+                null,
+                null,
+                ""
+            );
+    
+            if ((int)response["status_code"] != 200)
+            {
+                throw new PixelbinServerResponseError(response["content"].ToString());
+            }
+            return JsonConvert.DeserializeObject<TransformationModuleResponse>(response["content"].ToString());
+        }
+    
+        public TransformationModuleResponse? getModule(
+            string identifier
         )
         {
-            return Task.Run(() => deleteCredentialsAsync(
-            pluginId:pluginId)).GetAwaiter().GetResult();
+            return Task.Run(() => getModuleAsync(
+            identifier:identifier)).GetAwaiter().GetResult();
         }
     
      
@@ -1219,19 +1009,97 @@ namespace Pixelbin.Platform
     
     
         /// <summary>
-        /// Get all presets.
+        /// Get presets for an organization
         /// </summary>
         /// <remarks>
-        /// Get all presets of an organization. 
+        /// Retrieve presets for a specific organization.
         /// </remarks>
-        public async Task<AddPresetResponse?> getPresetsAsync()
+        /// <param name="pageNo">Page number</param>
+        /// <param name="pageSize">Page size</param>
+        /// <param name="name">Preset name</param>
+        /// <param name="transformation">Transformation applied</param>
+        /// <param name="archived">Indicates whether the preset is archived or not</param>
+        /// <param name="sort">Sort the results by a specific key</param>
+        public async Task<GetPresetsResponse?> getPresetsAsync(
+            int? pageNo = null,
+            int? pageSize = null,
+            string? name = null,
+            string? transformation = null,
+            bool? archived = null,
+            List<string>? sort = null
+        )
         { 
+            // Payload
+            var payload = new Dictionary<string, object>();
+    
+            if (pageNo != null)
+            {
+                payload.Add("pageNo", pageNo);
+            }
+    
+            if (pageSize != null)
+            {
+                payload.Add("pageSize", pageSize);
+            }
+    
+            if (name != null)
+            {
+                payload.Add("name", name);
+            }
+    
+            if (transformation != null)
+            {
+                payload.Add("transformation", transformation);
+            }
+    
+            if (archived != null)
+            {
+                payload.Add("archived", archived);
+            }
+    
+            if (sort != null)
+            {
+                payload.Add("sort", sort);
+            }
+    
+            // Params
+            var query_params = new Dictionary<string, object>();
+            
+            if (pageNo != null)
+            {
+                query_params.Add("pageNo", pageNo);
+            }
+            
+            if (pageSize != null)
+            {
+                query_params.Add("pageSize", pageSize);
+            }
+            
+            if (name != null)
+            {
+                query_params.Add("name", name);
+            }
+            
+            if (transformation != null)
+            {
+                query_params.Add("transformation", transformation);
+            }
+            
+            if (archived != null)
+            {
+                query_params.Add("archived", archived);
+            }
+            
+            if (sort != null)
+            {
+                query_params.Add("sort", sort);
+            }
     
             var response = await ApiClient.Execute<object>(
                 _configuration,
                 "get",
                 string.Format($"/service/platform/assets/v1.0/presets"),
-                null,
+                query_params,
                 null,
                 ""
             );
@@ -1240,12 +1108,25 @@ namespace Pixelbin.Platform
             {
                 throw new PixelbinServerResponseError(response["content"].ToString());
             }
-            return JsonConvert.DeserializeObject<AddPresetResponse>(response["content"].ToString());
+            return JsonConvert.DeserializeObject<GetPresetsResponse>(response["content"].ToString());
         }
     
-        public AddPresetResponse? getPresets()
+        public GetPresetsResponse? getPresets(
+            int? pageNo = null,
+            int? pageSize = null,
+            string? name = null,
+            string? transformation = null,
+            bool? archived = null,
+            List<string>? sort = null
+        )
         {
-            return Task.Run(() => getPresetsAsync()).GetAwaiter().GetResult();
+            return Task.Run(() => getPresetsAsync(
+            pageNo:pageNo, 
+            pageSize:pageSize, 
+            name:name, 
+            transformation:transformation, 
+            archived:archived, 
+            sort:sort)).GetAwaiter().GetResult();
         }
     
      
@@ -1383,23 +1264,83 @@ namespace Pixelbin.Platform
             presetName:presetName)).GetAwaiter().GetResult();
         }
     
-    
+     
         /// <summary>
-        /// Get default asset for playground
+        /// Upload File
         /// </summary>
         /// <remarks>
-        /// Get default asset for playground
+        /// Upload File to Pixelbin
         /// </remarks>
-        public async Task<UploadResponse?> getDefaultAssetForPlaygroundAsync()
+        /// <param name="file">Asset file</param>
+        /// <param name="path">Path where you want to store the asset</param>
+        /// <param name="name">Name of the asset, if not provided name of the file will be used. Note - The provided name will be slugified to make it URL safe</param>
+        /// <param name="access">Access level of asset, can be either `public-read` or `private`</param>
+        /// <param name="tags">Asset tags</param>
+        /// <param name="metadata">Asset related metadata</param>
+        /// <param name="overwrite">Overwrite flag. If set to `true` will overwrite any file that exists with same path, name and type. Defaults to `false`.</param>
+        /// <param name="filenameOverride">If set to `true` will add unique characters to name if asset with given name already exists. If overwrite flag is set to `true`, preference will be given to overwrite flag. If both are set to `false` an error will be raised.</param>
+        public async Task<UploadResponse?> fileUploadAsync(
+            FileStream file, 
+            string? path = null, 
+            string? name = null, 
+            AccessEnum? access = null, 
+            List<string>? tags = null, 
+            Dictionary<string, object>? metadata = null, 
+            bool? overwrite = null, 
+            bool? filenameOverride = null
+        )
         { 
     
-            var response = await ApiClient.Execute<object>(
+            // Body
+            var body = new FileUploadRequest();
+    
+            body.file = (FileStream)file;
+    
+            if (path != null)
+            { 
+                body.path = (string)path;
+            }
+    
+            if (name != null)
+            { 
+                body.name = (string)name;
+            }
+    
+            if (access != null)
+            { 
+                body.access = (AccessEnum)access;
+            }
+    
+            if (tags != null)
+            { 
+                body.tags = (List<string>)tags;
+            }
+    
+            if (metadata != null)
+            { 
+                body.metadata = (Dictionary<string, object>)metadata;
+            }
+    
+            if (overwrite != null)
+            { 
+                body.overwrite = (bool)overwrite;
+            }
+    
+            if (filenameOverride != null)
+            { 
+                body.filenameOverride = (bool)filenameOverride;
+            }
+    
+            // Body Validation
+            JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
+    
+            var response = await ApiClient.Execute(
                 _configuration,
-                "get",
-                string.Format($"/service/platform/assets/v1.0/playground/default"),
+                "post",
+                string.Format($"/service/platform/assets/v1.0/upload/direct"),
                 null,
-                null,
-                ""
+                body,
+                "multipart/form-data"
             );
     
             if ((int)response["status_code"] != 200)
@@ -1409,81 +1350,335 @@ namespace Pixelbin.Platform
             return JsonConvert.DeserializeObject<UploadResponse>(response["content"].ToString());
         }
     
-        public UploadResponse? getDefaultAssetForPlayground()
+        public UploadResponse? fileUpload(
+            FileStream file, 
+            string? path = null, 
+            string? name = null, 
+            AccessEnum? access = null, 
+            List<string>? tags = null, 
+            Dictionary<string, object>? metadata = null, 
+            bool? overwrite = null, 
+            bool? filenameOverride = null
+        )
         {
-            return Task.Run(() => getDefaultAssetForPlaygroundAsync()).GetAwaiter().GetResult();
+            return Task.Run(() => fileUploadAsync(
+            file:file, 
+            path:path, 
+            name:name, 
+            access:access, 
+            tags:tags, 
+            metadata:metadata, 
+            overwrite:overwrite, 
+            filenameOverride:filenameOverride)).GetAwaiter().GetResult();
         }
     
-    
+     
         /// <summary>
-        /// Get all transformation modules
+        /// Upload Asset with url
         /// </summary>
         /// <remarks>
-        /// Get all transformation modules. 
+        /// Upload Asset with url
         /// </remarks>
-        public async Task<TransformationModulesResponse?> getModulesAsync()
+        /// <param name="url">Asset URL</param>
+        /// <param name="path">Path where you want to store the asset</param>
+        /// <param name="name">Name of the asset, if not provided name of the file will be used. Note - The provided name will be slugified to make it URL safe</param>
+        /// <param name="access">Access level of asset, can be either `public-read` or `private`</param>
+        /// <param name="tags">Asset tags</param>
+        /// <param name="metadata">Asset related metadata</param>
+        /// <param name="overwrite">Overwrite flag. If set to `true` will overwrite any file that exists with same path, name and type. Defaults to `false`.</param>
+        /// <param name="filenameOverride">If set to `true` will add unique characters to name if asset with given name already exists. If overwrite flag is set to `true`, preference will be given to overwrite flag. If both are set to `false` an error will be raised.</param>
+        public async Task<UploadResponse?> urlUploadAsync(
+            string url, 
+            string? path = null, 
+            string? name = null, 
+            AccessEnum? access = null, 
+            List<string>? tags = null, 
+            Dictionary<string, object>? metadata = null, 
+            bool? overwrite = null, 
+            bool? filenameOverride = null
+        )
         { 
     
-            var response = await ApiClient.Execute<object>(
+            // Body
+            var body = new UrlUploadRequest();
+    
+            body.url = (string)url;
+    
+            if (path != null)
+            { 
+                body.path = (string)path;
+            }
+    
+            if (name != null)
+            { 
+                body.name = (string)name;
+            }
+    
+            if (access != null)
+            { 
+                body.access = (AccessEnum)access;
+            }
+    
+            if (tags != null)
+            { 
+                body.tags = (List<string>)tags;
+            }
+    
+            if (metadata != null)
+            { 
+                body.metadata = (Dictionary<string, object>)metadata;
+            }
+    
+            if (overwrite != null)
+            { 
+                body.overwrite = (bool)overwrite;
+            }
+    
+            if (filenameOverride != null)
+            { 
+                body.filenameOverride = (bool)filenameOverride;
+            }
+    
+            // Body Validation
+            JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
+    
+            var response = await ApiClient.Execute(
                 _configuration,
-                "get",
-                string.Format($"/service/platform/assets/v1.0/playground/plugins"),
+                "post",
+                string.Format($"/service/platform/assets/v1.0/upload/url"),
                 null,
-                null,
-                ""
+                body,
+                "application/json"
             );
     
             if ((int)response["status_code"] != 200)
             {
                 throw new PixelbinServerResponseError(response["content"].ToString());
             }
-            return JsonConvert.DeserializeObject<TransformationModulesResponse>(response["content"].ToString());
+            return JsonConvert.DeserializeObject<UploadResponse>(response["content"].ToString());
         }
     
-        public TransformationModulesResponse? getModules()
+        public UploadResponse? urlUpload(
+            string url, 
+            string? path = null, 
+            string? name = null, 
+            AccessEnum? access = null, 
+            List<string>? tags = null, 
+            Dictionary<string, object>? metadata = null, 
+            bool? overwrite = null, 
+            bool? filenameOverride = null
+        )
         {
-            return Task.Run(() => getModulesAsync()).GetAwaiter().GetResult();
+            return Task.Run(() => urlUploadAsync(
+            url:url, 
+            path:path, 
+            name:name, 
+            access:access, 
+            tags:tags, 
+            metadata:metadata, 
+            overwrite:overwrite, 
+            filenameOverride:filenameOverride)).GetAwaiter().GetResult();
         }
     
-    
+     
         /// <summary>
-        /// Get Transformation Module by module identifier
+        /// S3 Signed URL upload
         /// </summary>
         /// <remarks>
-        /// Get Transformation Module by module identifier 
+        /// For the given asset details, a S3 signed URL will be generated, which can be then used to upload your asset. 
         /// </remarks>
-        /// <param name="identifier">identifier of Transformation Module</param>
-        public async Task<TransformationModuleResponse?> getModuleAsync(
-            string identifier
+        /// <param name="name">name of the file</param>
+        /// <param name="path">Path of the file</param>
+        /// <param name="format">Format of the file</param>
+        /// <param name="access">Access level of asset, can be either `public-read` or `private`</param>
+        /// <param name="tags">Tags associated with the file.</param>
+        /// <param name="metadata">Metadata associated with the file.</param>
+        /// <param name="overwrite">Overwrite flag. If set to `true` will overwrite any file that exists with same path, name and type. Defaults to `false`.</param>
+        /// <param name="filenameOverride">If set to `true` will add unique characters to name if asset with given name already exists. If overwrite flag is set to `true`, preference will be given to overwrite flag. If both are set to `false` an error will be raised.</param>
+        public async Task<SignedUploadResponse?> createSignedUrlAsync(
+            string? name = null, 
+            string? path = null, 
+            string? format = null, 
+            AccessEnum? access = null, 
+            List<string>? tags = null, 
+            Dictionary<string, object>? metadata = null, 
+            bool? overwrite = null, 
+            bool? filenameOverride = null
         )
         { 
-            // Payload
-            var payload = new Dictionary<string, object>();
     
-            payload.Add("identifier", identifier);
+            // Body
+            var body = new SignedUploadRequest();
     
-            var response = await ApiClient.Execute<object>(
+            if (name != null)
+            { 
+                body.name = (string)name;
+            }if (path != null)
+            { 
+                body.path = (string)path;
+            }if (format != null)
+            { 
+                body.format = (string)format;
+            }if (access != null)
+            { 
+                body.access = (AccessEnum)access;
+            }if (tags != null)
+            { 
+                body.tags = (List<string>)tags;
+            }if (metadata != null)
+            { 
+                body.metadata = (Dictionary<string, object>)metadata;
+            }if (overwrite != null)
+            { 
+                body.overwrite = (bool)overwrite;
+            }if (filenameOverride != null)
+            { 
+                body.filenameOverride = (bool)filenameOverride;
+            }
+    
+            // Body Validation
+            JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
+    
+            var response = await ApiClient.Execute(
                 _configuration,
-                "get",
-                string.Format($"/service/platform/assets/v1.0/playground/plugins/{identifier}"),
+                "post",
+                string.Format($"/service/platform/assets/v1.0/upload/signed-url"),
                 null,
-                null,
-                ""
+                body,
+                "application/json"
             );
     
             if ((int)response["status_code"] != 200)
             {
                 throw new PixelbinServerResponseError(response["content"].ToString());
             }
-            return JsonConvert.DeserializeObject<TransformationModuleResponse>(response["content"].ToString());
+            return JsonConvert.DeserializeObject<SignedUploadResponse>(response["content"].ToString());
         }
     
-        public TransformationModuleResponse? getModule(
-            string identifier
+        public SignedUploadResponse? createSignedUrl(
+            string? name = null, 
+            string? path = null, 
+            string? format = null, 
+            AccessEnum? access = null, 
+            List<string>? tags = null, 
+            Dictionary<string, object>? metadata = null, 
+            bool? overwrite = null, 
+            bool? filenameOverride = null
         )
         {
-            return Task.Run(() => getModuleAsync(
-            identifier:identifier)).GetAwaiter().GetResult();
+            return Task.Run(() => createSignedUrlAsync(
+            name:name, 
+            path:path, 
+            format:format, 
+            access:access, 
+            tags:tags, 
+            metadata:metadata, 
+            overwrite:overwrite, 
+            filenameOverride:filenameOverride)).GetAwaiter().GetResult();
+        }
+    
+     
+        /// <summary>
+        /// Signed multipart upload
+        /// </summary>
+        /// <remarks>
+        /// For the given asset details, a presigned URL will be generated, which can be then used to upload your asset in chunks via multipart upload.
+        /// </remarks>
+        /// <param name="name">name of the file</param>
+        /// <param name="path">Path of containing folder.</param>
+        /// <param name="format">Format of the file</param>
+        /// <param name="access">Access level of asset, can be either `public-read` or `private`</param>
+        /// <param name="tags">Tags associated with the file.</param>
+        /// <param name="metadata">Metadata associated with the file.</param>
+        /// <param name="overwrite">Overwrite flag. If set to `true` will overwrite any file that exists with same path, name and type. Defaults to `false`.</param>
+        /// <param name="filenameOverride">If set to `true` will add unique characters to name if asset with given name already exists. If overwrite flag is set to `true`, preference will be given to overwrite flag. If both are set to `false` an error will be raised.</param>
+        /// <param name="expiry">Expiry time in seconds for the signed URL. Defaults to 3000 seconds.</param>
+        public async Task<SignedUploadV2Response?> createSignedUrlV2Async(
+            string? name = null, 
+            string? path = null, 
+            string? format = null, 
+            AccessEnum? access = null, 
+            List<string>? tags = null, 
+            Dictionary<string, object>? metadata = null, 
+            bool? overwrite = null, 
+            bool? filenameOverride = null, 
+            int? expiry = null
+        )
+        { 
+    
+            // Body
+            var body = new SignedUploadRequestV2();
+    
+            if (name != null)
+            { 
+                body.name = (string)name;
+            }if (path != null)
+            { 
+                body.path = (string)path;
+            }if (format != null)
+            { 
+                body.format = (string)format;
+            }if (access != null)
+            { 
+                body.access = (AccessEnum)access;
+            }if (tags != null)
+            { 
+                body.tags = (List<string>)tags;
+            }if (metadata != null)
+            { 
+                body.metadata = (Dictionary<string, object>)metadata;
+            }if (overwrite != null)
+            { 
+                body.overwrite = (bool)overwrite;
+            }if (filenameOverride != null)
+            { 
+                body.filenameOverride = (bool)filenameOverride;
+            }if (expiry != null)
+            { 
+                body.expiry = (int)expiry;
+            }
+    
+            // Body Validation
+            JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
+    
+            var response = await ApiClient.Execute(
+                _configuration,
+                "post",
+                string.Format($"/service/platform/assets/v2.0/upload/signed-url"),
+                null,
+                body,
+                "application/json"
+            );
+    
+            if ((int)response["status_code"] != 200)
+            {
+                throw new PixelbinServerResponseError(response["content"].ToString());
+            }
+            return JsonConvert.DeserializeObject<SignedUploadV2Response>(response["content"].ToString());
+        }
+    
+        public SignedUploadV2Response? createSignedUrlV2(
+            string? name = null, 
+            string? path = null, 
+            string? format = null, 
+            AccessEnum? access = null, 
+            List<string>? tags = null, 
+            Dictionary<string, object>? metadata = null, 
+            bool? overwrite = null, 
+            bool? filenameOverride = null, 
+            int? expiry = null
+        )
+        {
+            return Task.Run(() => createSignedUrlV2Async(
+            name:name, 
+            path:path, 
+            format:format, 
+            access:access, 
+            tags:tags, 
+            metadata:metadata, 
+            overwrite:overwrite, 
+            filenameOverride:filenameOverride, 
+            expiry:expiry)).GetAwaiter().GetResult();
         }
     }
     
