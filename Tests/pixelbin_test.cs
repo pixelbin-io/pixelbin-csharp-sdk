@@ -333,7 +333,7 @@ namespace PixelbinTest
                 fileId: $"{this.folder_name}/1",
                 name: $"{this.folder_name}_",
                 path: this.folder_name,
-                access: Enums.AccessEnum.PRIVATE.EnumValue(),
+                access: Enums.AccessEnum.PRIVATE,
                 isActive: true,
                 tags: tags,
                 metadata: new Dictionary<string, object>() { { "key", "value" } });
