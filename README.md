@@ -1,14 +1,14 @@
-# Pixelbin Backend SDK for C#
+# Pixelbin Backend SDK for C\#
 
-Pixelbin Backend SDK for C# helps you integrate the core Pixelbin features with your application.
+Pixelbin Backend SDK for C\# helps you integrate the core Pixelbin features with your application.
 
 ## Getting Started
 
-Getting started with Pixelbin Backend SDK for C#
+Getting started with Pixelbin Backend SDK for C\#
 
 ### Installation
 
-```
+```sh
 dotnet add package pixelbin
 ```
 
@@ -22,6 +22,8 @@ dotnet add package pixelbin
 using System;
 using System.Collections.Generic;
 using System.IO;
+
+// import the Pixelbin Platform Namespace
 using Pixelbin.Platform;
 
 namespace ExampleNamespace
@@ -30,7 +32,7 @@ namespace ExampleNamespace
     {
         async void Main(string[] args)
         {
-            // create client with your API_TOKEN
+            // Create a config with your API_TOKEN
             PixelbinConfig config = new PixelbinConfig(
                 new Dictionary<string, string>() {
                     { "domain", "https://api.pixelbin.io" },
@@ -40,21 +42,10 @@ namespace ExampleNamespace
             // Create a pixelbin instance
             PixelbinClient pixelbin = new PixelbinClient(config);
 
-            // Sync method call
+            // List the assets stored on your organization's Pixelbin Storage
             try
             {
                 var result = pixelbin.assets.listFiles();
-                Console.WriteLine(result);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-
-            // Async method call
-            try
-            {
-                var result = await pixelbin.assets.listFilesAsync();
                 Console.WriteLine(result);
             }
             catch (Exception e)
@@ -312,7 +303,7 @@ namespace ExampleNamespace
 }
 ```
 
-## Utilities
+## URL Utils
 
 Pixelbin provides url utilities to construct and deconstruct Pixelbin urls.
 
@@ -452,4 +443,4 @@ namespace ExampleNamespace
 
 ## Documentation
 
--   [API docs](/documentation/platform/README.md)
+-   [API docs](https://github.com/pixelbin-io/pixelbin-csharp-sdk/blob/main/documentation/platform/README.md)
