@@ -9,12 +9,10 @@ using static Pixelbin.Platform.Enums;
 namespace Pixelbin.Platform.Models
 {
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
-    internal class GetFilesWithConstraintsRequest
+    public class SignedUploadV2Response
     {
         
-        public List<GetFilesWithConstraintsItem>? items { get; set; }
-        public float? maxCount { get; set; }
-        public float? maxSize { get; set; }
+        public PresignedUrlV2? presignedUrl { get; set; }
 
         public override string ToString() {
             return JsonConvert.SerializeObject(this);

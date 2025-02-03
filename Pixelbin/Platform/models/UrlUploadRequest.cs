@@ -12,7 +12,7 @@ namespace Pixelbin.Platform.Models
     internal class UrlUploadRequest
     {
         
-        public string url { get; set; }
+        public string? url { get; set; }
         public string? path { get; set; }
         public string? name { get; set; }
         public AccessEnum? access { get; set; }

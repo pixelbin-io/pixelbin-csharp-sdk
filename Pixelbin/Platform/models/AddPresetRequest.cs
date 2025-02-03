@@ -12,8 +12,8 @@ namespace Pixelbin.Platform.Models
     internal class AddPresetRequest
     {
         
-        public string presetName { get; set; }
-        public string transformation { get; set; }
+        public string? presetName { get; set; }
+        public string? transformation { get; set; }
         public Dictionary<string, object>? @params { get; set; }
 
         public override string ToString() {

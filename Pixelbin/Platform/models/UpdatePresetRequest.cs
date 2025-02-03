@@ -12,7 +12,7 @@ namespace Pixelbin.Platform.Models
     internal class UpdatePresetRequest
     {
         
-        public bool archived { get; set; }
+        public bool? archived { get; set; }
 
         public override string ToString() {
             return JsonConvert.SerializeObject(this);

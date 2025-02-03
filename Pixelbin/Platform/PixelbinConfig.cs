@@ -38,17 +38,17 @@ namespace Pixelbin.Platform
         /// <summary>
         /// Validates apiSecret.
         /// </summary>
-        /// <exception cref="PixelbinInvalidCredentialError"></exception>
+        /// <exception cref="PDKInvalidCredentialError"></exception>
         private void Validate()
         {
             if (string.IsNullOrEmpty(ApiSecret))
             {
-                throw new PixelbinInvalidCredentialError("No API Secret Token Present");
+                throw new PDKInvalidCredentialError("No API Secret Token Present");
             }
 
             if (ApiSecret.Length < APPLICATION_MIN_TOKEN_LENGTH)
             {
-                throw new PixelbinInvalidCredentialError("Invalid API Secret Token");
+                throw new PDKInvalidCredentialError("Invalid API Secret Token");
             }
         }
     }

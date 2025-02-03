@@ -9,12 +9,11 @@ using static Pixelbin.Platform.Enums;
 namespace Pixelbin.Platform.Models
 {
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
-    public class ExploreFolderResponse
+    public class PresignedUrlV2
     {
         
-        public FolderItem folder { get; set; }
-        public List<ExploreItem> items { get; set; }
-        public Page page { get; set; }
+        public string? url { get; set; }
+        public Dictionary<string, object>? fields { get; set; }
 
         public override string ToString() {
             return JsonConvert.SerializeObject(this);

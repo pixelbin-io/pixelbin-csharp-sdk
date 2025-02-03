@@ -9,12 +9,18 @@ using static Pixelbin.Platform.Enums;
 namespace Pixelbin.Platform.Models
 {
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
-    public class GetFilesWithConstraintsItem
+    internal class SignedUploadRequestV2
     {
         
-        public string? path { get; set; }
         public string? name { get; set; }
-        public string? type { get; set; }
+        public string? path { get; set; }
+        public string? format { get; set; }
+        public AccessEnum? access { get; set; }
+        public List<string>? tags { get; set; }
+        public Dictionary<string, object>? metadata { get; set; }
+        public bool? overwrite { get; set; }
+        public bool? filenameOverride { get; set; }
+        public int? expiry { get; set; }
 
         public override string ToString() {
             return JsonConvert.SerializeObject(this);

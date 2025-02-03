@@ -4,11 +4,9 @@
 
 Asset Uploader Service
 
--   [fileUpload](#fileupload)
--   [urlUpload](#urlupload)
--   [createSignedUrl](#createsignedurl)
--   [listFiles](#listfiles)
--   [listFilesPaginator](#listfilespaginator)
+-   [addCredentials](#addcredentials)
+-   [updateCredentials](#updatecredentials)
+-   [deleteCredentials](#deletecredentials)
 -   [getFileById](#getfilebyid)
 -   [getFileByFileId](#getfilebyfileid)
 -   [updateFile](#updatefile)
@@ -19,23 +17,26 @@ Asset Uploader Service
 -   [updateFolder](#updatefolder)
 -   [deleteFolder](#deletefolder)
 -   [getFolderAncestors](#getfolderancestors)
--   [addCredentials](#addcredentials)
--   [updateCredentials](#updatecredentials)
--   [deleteCredentials](#deletecredentials)
+-   [listFiles](#listfiles)
+-   [listFilesPaginator](#listfilespaginator)
+-   [getDefaultAssetForPlayground](#getdefaultassetforplayground)
+-   [getModules](#getmodules)
+-   [getModule](#getmodule)
 -   [addPreset](#addpreset)
 -   [getPresets](#getpresets)
 -   [updatePreset](#updatepreset)
 -   [deletePreset](#deletepreset)
 -   [getPreset](#getpreset)
--   [getDefaultAssetForPlayground](#getdefaultassetforplayground)
--   [getModules](#getmodules)
--   [getModule](#getmodule)
+-   [fileUpload](#fileupload)
+-   [urlUpload](#urlupload)
+-   [createSignedUrl](#createsignedurl)
+-   [createSignedUrlV2](#createsignedurlv2)
 
 ## Methods with example and description
 
-### fileUpload
+### addCredentials
 
-**Summary**: Upload File
+**Summary**: Add credentials for a transformation module.
 
 ```csharp
 using System;
@@ -60,15 +61,9 @@ namespace ExampleNamespace
             // Sync method call
             try
             {
-                var result = pixelbin.assets.fileUpload(
-                    file: new FileStream("your-file-path", FileMode.Open),
-                    path: path/to/containing/folder,
-                    name: filename,
-                    access: public-read,
-                    tags: new List<string>() { "tag1", "tag2" },
-                    metadata: new Dictionary<string, object> {  },
-                    overwrite: False,
-                    filenameOverride: True
+                var result = pixelbin.assets.addCredentials(
+                    credentials: new Dictionary<string, object> { { "region", "ap-south-1" }, { "accessKeyId", "123456789ABC" }, { "secretAccessKey", "DUMMY1234567890" } },
+                    pluginId: awsRek
                 );
                 // use result
             }
@@ -80,15 +75,9 @@ namespace ExampleNamespace
             // Async method call
             try
             {
-                var result = await pixelbin.assets.fileUploadAsync(
-                    file: new FileStream("your-file-path", FileMode.Open),
-                    path: path/to/containing/folder,
-                    name: filename,
-                    access: public-read,
-                    tags: new List<string>() { "tag1", "tag2" },
-                    metadata: new Dictionary<string, object> {  },
-                    overwrite: False,
-                    filenameOverride: True
+                var result = await pixelbin.assets.addCredentialsAsync(
+                    credentials: new Dictionary<string, object> { { "region", "ap-south-1" }, { "accessKeyId", "123456789ABC" }, { "secretAccessKey", "DUMMY1234567890" } },
+                    pluginId: awsRek
                 );
                 // use result
             }
@@ -101,22 +90,16 @@ namespace ExampleNamespace
 }
 ```
 
-| Argument         | Type                       | Required | Description                                                                                                                                                                                                                      |
-| ---------------- | -------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| file             | FileStream                 | yes      | Asset file                                                                                                                                                                                                                       |
-| path             | string                     | no       | Path where you want to store the asset. Path of containing folder                                                                                                                                                                |
-| name             | string                     | no       | Name of the asset, if not provided name of the file will be used. Note - The provided name will be slugified to make it URL safe                                                                                                 |
-| access           | AccessEnum                 | no       | Access level of asset, can be either `public-read` or `private`                                                                                                                                                                  |
-| tags             | List<string>               | no       | Asset tags                                                                                                                                                                                                                       |
-| metadata         | Dictionary<string, object> | no       | Asset related metadata                                                                                                                                                                                                           |
-| overwrite        | bool                       | no       | Overwrite flag. If set to `true` will overwrite any file that exists with same path, name and type. Defaults to `false`.                                                                                                         |
-| filenameOverride | bool                       | no       | If set to `true` will add unique characters to name if asset with given name already exists. If overwrite flag is set to `true`, preference will be given to overwrite flag. If both are set to `false` an error will be raised. |
+| Argument    | Type                       | Required | Description                                                 |
+| ----------- | -------------------------- | -------- | ----------------------------------------------------------- |
+| credentials | Dictionary<string, object> | yes      | Credentials of the plugin                                   |
+| pluginId    | string                     | yes      | Unique identifier for the plugin this credential belongs to |
 
-Upload File to Pixelbin
+Add a transformation modules's credentials for an organization.
 
 _Returned Response:_
 
-[UploadResponse](#uploadresponse)
+[AddCredentialsResponse](#addcredentialsresponse)
 
 Success
 
@@ -125,27 +108,19 @@ Success
 
 ```json
 {
-    "_id": "dummy-uuid",
-    "name": "asset",
-    "path": "dir",
-    "fileId": "dir/asset",
-    "format": "jpeg",
-    "size": 1000,
-    "access": "private",
-    "isActive": true,
-    "tags": ["tag1", "tag2"],
-    "metadata": {
-        "key": "value"
-    },
-    "url": "https://domain.com/filename.jpeg"
+    "_id": "123ee789-7ae8-4336-b9bd-e4f33c049002",
+    "createdAt": "2022-10-04T09:52:09.545Z",
+    "updatedAt": "2022-10-04T09:52:09.545Z",
+    "orgId": 23,
+    "pluginId": "awsRek"
 }
 ```
 
 </details>
 
-### urlUpload
+### updateCredentials
 
-**Summary**: Upload Asset with url
+**Summary**: Update credentials of a transformation module.
 
 ```csharp
 using System;
@@ -170,15 +145,9 @@ namespace ExampleNamespace
             // Sync method call
             try
             {
-                var result = pixelbin.assets.urlUpload(
-                    url: www.dummy.com/image.png,
-                    path: path/to/containing/folder,
-                    name: filename,
-                    access: public-read,
-                    tags: new List<string>() { "tag1", "tag2" },
-                    metadata: new Dictionary<string, object> {  },
-                    overwrite: False,
-                    filenameOverride: True
+                var result = pixelbin.assets.updateCredentials(
+                    pluginId: "awsRek",
+                    credentials: new Dictionary<string, object> { { "region", "ap-south-1" }, { "accessKeyId", "123456789ABC" }, { "secretAccessKey", "DUMMY1234567890" } }
                 );
                 // use result
             }
@@ -190,15 +159,9 @@ namespace ExampleNamespace
             // Async method call
             try
             {
-                var result = await pixelbin.assets.urlUploadAsync(
-                    url: www.dummy.com/image.png,
-                    path: path/to/containing/folder,
-                    name: filename,
-                    access: public-read,
-                    tags: new List<string>() { "tag1", "tag2" },
-                    metadata: new Dictionary<string, object> {  },
-                    overwrite: False,
-                    filenameOverride: True
+                var result = await pixelbin.assets.updateCredentialsAsync(
+                    pluginId: "awsRek",
+                    credentials: new Dictionary<string, object> { { "region", "ap-south-1" }, { "accessKeyId", "123456789ABC" }, { "secretAccessKey", "DUMMY1234567890" } }
                 );
                 // use result
             }
@@ -211,22 +174,16 @@ namespace ExampleNamespace
 }
 ```
 
-| Argument         | Type                       | Required | Description                                                                                                                                                                                                                      |
-| ---------------- | -------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| url              | string                     | yes      | Asset URL                                                                                                                                                                                                                        |
-| path             | string                     | no       | Path where you want to store the asset. Path of containing folder.                                                                                                                                                               |
-| name             | string                     | no       | Name of the asset, if not provided name of the file will be used. Note - The provided name will be slugified to make it URL safe                                                                                                 |
-| access           | AccessEnum                 | no       | Access level of asset, can be either `public-read` or `private`                                                                                                                                                                  |
-| tags             | List<string>               | no       | Asset tags                                                                                                                                                                                                                       |
-| metadata         | Dictionary<string, object> | no       | Asset related metadata                                                                                                                                                                                                           |
-| overwrite        | bool                       | no       | Overwrite flag. If set to `true` will overwrite any file that exists with same path, name and type. Defaults to `false`.                                                                                                         |
-| filenameOverride | bool                       | no       | If set to `true` will add unique characters to name if asset with given name already exists. If overwrite flag is set to `true`, preference will be given to overwrite flag. If both are set to `false` an error will be raised. |
+| Argument    | Type                       | Required | Description                                          |
+| ----------- | -------------------------- | -------- | ---------------------------------------------------- |
+| pluginId    | string                     | yes      | ID of the plugin whose credentials are being updated |
+| credentials | Dictionary<string, object> | yes      | Credentials of the plugin                            |
 
-Upload Asset with url
+Update credentials of a transformation module, for an organization.
 
 _Returned Response:_
 
-[UploadResponse](#uploadresponse)
+[AddCredentialsResponse](#addcredentialsresponse)
 
 Success
 
@@ -235,132 +192,19 @@ Success
 
 ```json
 {
-    "_id": "dummy-uuid",
-    "name": "asset",
-    "path": "dir",
-    "fileId": "dir/asset",
-    "format": "jpeg",
-    "size": 1000,
-    "access": "private",
-    "isActive": true,
-    "tags": ["tag1", "tag2"],
-    "metadata": {
-        "key": "value"
-    },
-    "url": "https://domain.com/filename.jpeg"
+    "_id": "123ee789-7ae8-4336-b9bd-e4f33c049002",
+    "createdAt": "2022-10-04T09:52:09.545Z",
+    "updatedAt": "2022-10-04T09:52:09.545Z",
+    "orgId": 23,
+    "pluginId": "awsRek"
 }
 ```
 
 </details>
 
-### createSignedUrl
+### deleteCredentials
 
-**Summary**: S3 Signed URL upload
-
-```csharp
-using System;
-using System.Collections.Generic;
-using System.IO;
-using Pixelbin.Platform;
-
-namespace ExampleNamespace
-{
-    class ExampleClass
-    {
-        async void Main(string[] args)
-        {
-            PixelbinConfig config = new PixelbinConfig(
-                new Dictionary<string, string>() {
-                    { "domain", "https://api.pixelbin.io" },
-                    { "apiSecret", "API_SECRECT_TOKEN" }
-                });
-
-            PixelbinClient pixelbin = new PixelbinClient(config);
-
-            // Sync method call
-            try
-            {
-                var result = pixelbin.assets.createSignedUrl(
-                    name: filename,
-                    path: path/to/containing/folder,
-                    format: jpeg,
-                    access: public-read,
-                    tags: new List<string>() { "tag1", "tag2" },
-                    metadata: new Dictionary<string, object> {  },
-                    overwrite: False,
-                    filenameOverride: True
-                );
-                // use result
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-
-            // Async method call
-            try
-            {
-                var result = await pixelbin.assets.createSignedUrlAsync(
-                    name: filename,
-                    path: path/to/containing/folder,
-                    format: jpeg,
-                    access: public-read,
-                    tags: new List<string>() { "tag1", "tag2" },
-                    metadata: new Dictionary<string, object> {  },
-                    overwrite: False,
-                    filenameOverride: True
-                );
-                // use result
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
-    }
-}
-```
-
-| Argument         | Type                       | Required | Description                                                                                                                                                                                                                      |
-| ---------------- | -------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| name             | string                     | no       | name of the file                                                                                                                                                                                                                 |
-| path             | string                     | no       | Path of containing folder.                                                                                                                                                                                                       |
-| format           | string                     | no       | Format of the file                                                                                                                                                                                                               |
-| access           | AccessEnum                 | no       | Access level of asset, can be either `public-read` or `private`                                                                                                                                                                  |
-| tags             | List<string>               | no       | Tags associated with the file.                                                                                                                                                                                                   |
-| metadata         | Dictionary<string, object> | no       | Metadata associated with the file.                                                                                                                                                                                               |
-| overwrite        | bool                       | no       | Overwrite flag. If set to `true` will overwrite any file that exists with same path, name and type. Defaults to `false`.                                                                                                         |
-| filenameOverride | bool                       | no       | If set to `true` will add unique characters to name if asset with given name already exists. If overwrite flag is set to `true`, preference will be given to overwrite flag. If both are set to `false` an error will be raised. |
-
-For the given asset details, a S3 signed URL will be generated,
-which can be then used to upload your asset.
-
-_Returned Response:_
-
-[SignedUploadResponse](#signeduploadresponse)
-
-Success
-
-<details>
-<summary><i>&nbsp; Example:</i></summary>
-
-```json
-{
-    "s3PresignedUrl": {
-        "url": "https://domain.com/xyz",
-        "fields": {
-            "field1": "value",
-            "field2": "value"
-        }
-    }
-}
-```
-
-</details>
-
-### listFiles
-
-**Summary**: List and search files and folders.
+**Summary**: Delete credentials of a transformation module.
 
 ```csharp
 using System;
@@ -385,16 +229,8 @@ namespace ExampleNamespace
             // Sync method call
             try
             {
-                var result = pixelbin.assets.listFiles(
-                    name: "cat",
-                    path: "cat-photos",
-                    format: "jpeg",
-                    tags: new List<string>() {"cats","animals"},
-                    onlyFiles: "false",
-                    onlyFolders: "false",
-                    pageNo: 1,
-                    pageSize: 10,
-                    sort: "name"
+                var result = pixelbin.assets.deleteCredentials(
+                    pluginId: "awsRek"
                 );
                 // use result
             }
@@ -406,16 +242,8 @@ namespace ExampleNamespace
             // Async method call
             try
             {
-                var result = await pixelbin.assets.listFilesAsync(
-                    name: "cat",
-                    path: "cat-photos",
-                    format: "jpeg",
-                    tags: new List<string>() {"cats","animals"},
-                    onlyFiles: "false",
-                    onlyFolders: "false",
-                    pageNo: 1,
-                    pageSize: 10,
-                    sort: "name"
+                var result = await pixelbin.assets.deleteCredentialsAsync(
+                    pluginId: "awsRek"
                 );
                 // use result
             }
@@ -428,23 +256,15 @@ namespace ExampleNamespace
 }
 ```
 
-| Argument    | Type         | Required | Description                                                                  |
-| ----------- | ------------ | -------- | ---------------------------------------------------------------------------- |
-| name        | string       | no       | Find items with matching name                                                |
-| path        | string       | no       | Find items with matching path                                                |
-| format      | string       | no       | Find items with matching format                                              |
-| tags        | List<string> | no       | Find items containing these tags                                             |
-| onlyFiles   | bool         | no       | If true will fetch only files                                                |
-| onlyFolders | bool         | no       | If true will fetch only folders                                              |
-| pageNo      | int          | no       | Page No.                                                                     |
-| pageSize    | int          | no       | Page Size                                                                    |
-| sort        | string       | no       | Key to sort results by. A "-" suffix will sort results in descending orders. |
+| Argument | Type   | Required | Description                                          |
+| -------- | ------ | -------- | ---------------------------------------------------- |
+| pluginId | string | yes      | ID of the plugin whose credentials are being deleted |
 
-List all files and folders in root folder. Search for files if name is provided. If path is provided, search in the specified path.
+Delete credentials of a transformation module, for an organization.
 
 _Returned Response:_
 
-[ListFilesResponse](#listfilesresponse)
+[AddCredentialsResponse](#addcredentialsresponse)
 
 Success
 
@@ -453,39 +273,11 @@ Success
 
 ```json
 {
-    "items": [
-        {
-            "_id": "dummy-uuid",
-            "name": "dir",
-            "type": "folder"
-        },
-        {
-            "_id": "dummy-uuid",
-            "name": "asset2",
-            "type": "file",
-            "path": "dir",
-            "fileId": "dir/asset2",
-            "format": "jpeg",
-            "size": 1000,
-            "access": "private"
-        },
-        {
-            "_id": "dummy-uuid",
-            "name": "asset1",
-            "type": "file",
-            "path": "dir",
-            "fileId": "dir/asset1",
-            "format": "jpeg",
-            "size": 1000,
-            "access": "private"
-        }
-    ],
-    "page": {
-        "type": "number",
-        "size": 4,
-        "current": 1,
-        "hasNext": false
-    }
+    "_id": "123ee789-7ae8-4336-b9bd-e4f33c049002",
+    "createdAt": "2022-10-04T09:52:09.545Z",
+    "updatedAt": "2022-10-04T09:52:09.545Z",
+    "orgId": 23,
+    "pluginId": "awsRek"
 }
 ```
 
@@ -735,8 +527,8 @@ namespace ExampleNamespace
 | -------- | -------------------------- | -------- | --------------------------------------------------------------- |
 | fileId   | string                     | yes      | Combination of `path` and `name`                                |
 | name     | string                     | no       | Name of the file                                                |
-| path     | string                     | no       | path of containing folder.                                      |
-| access   | string                     | no       | Access level of asset, can be either `public-read` or `private` |
+| path     | string                     | no       | Path of the file                                                |
+| access   | AccessEnum                 | no       | Access level of asset, can be either `public-read` or `private` |
 | isActive | bool                       | no       | Whether the file is active                                      |
 | tags     | List<string>               | no       | Tags associated with the file                                   |
 | metadata | Dictionary<string, object> | no       | Metadata associated with the file                               |
@@ -1002,10 +794,10 @@ namespace ExampleNamespace
 }
 ```
 
-| Argument | Type   | Required | Description                |
-| -------- | ------ | -------- | -------------------------- |
-| name     | string | yes      | Name of the folder         |
-| path     | string | no       | path of containing folder. |
+| Argument | Type   | Required | Description        |
+| -------- | ------ | -------- | ------------------ |
+| name     | string | yes      | Name of the folder |
+| path     | string | no       | Path of the folder |
 
 Create a new folder at the specified path. Also creates the ancestors if they do not exist.
 
@@ -1384,93 +1176,9 @@ Success
 
 </details>
 
-### addCredentials
+### listFiles
 
-**Summary**: Add credentials for a transformation module.
-
-```csharp
-using System;
-using System.Collections.Generic;
-using System.IO;
-using Pixelbin.Platform;
-
-namespace ExampleNamespace
-{
-    class ExampleClass
-    {
-        async void Main(string[] args)
-        {
-            PixelbinConfig config = new PixelbinConfig(
-                new Dictionary<string, string>() {
-                    { "domain", "https://api.pixelbin.io" },
-                    { "apiSecret", "API_SECRECT_TOKEN" }
-                });
-
-            PixelbinClient pixelbin = new PixelbinClient(config);
-
-            // Sync method call
-            try
-            {
-                var result = pixelbin.assets.addCredentials(
-                    credentials: new Dictionary<string, object> { { "region", "ap-south-1" }, { "accessKeyId", "123456789ABC" }, { "secretAccessKey", "DUMMY1234567890" } },
-                    pluginId: awsRek
-                );
-                // use result
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-
-            // Async method call
-            try
-            {
-                var result = await pixelbin.assets.addCredentialsAsync(
-                    credentials: new Dictionary<string, object> { { "region", "ap-south-1" }, { "accessKeyId", "123456789ABC" }, { "secretAccessKey", "DUMMY1234567890" } },
-                    pluginId: awsRek
-                );
-                // use result
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
-    }
-}
-```
-
-| Argument    | Type                       | Required | Description                                                 |
-| ----------- | -------------------------- | -------- | ----------------------------------------------------------- |
-| credentials | Dictionary<string, object> | yes      | Credentials of the plugin                                   |
-| pluginId    | string                     | yes      | Unique identifier for the plugin this credential belongs to |
-
-Add a transformation modules's credentials for an organization.
-
-_Returned Response:_
-
-[AddCredentialsResponse](#addcredentialsresponse)
-
-Success
-
-<details>
-<summary><i>&nbsp; Example:</i></summary>
-
-```json
-{
-    "_id": "123ee789-7ae8-4336-b9bd-e4f33c049002",
-    "createdAt": "2022-10-04T09:52:09.545Z",
-    "updatedAt": "2022-10-04T09:52:09.545Z",
-    "orgId": 23,
-    "pluginId": "awsRek"
-}
-```
-
-</details>
-
-### updateCredentials
-
-**Summary**: Update credentials of a transformation module.
+**Summary**: List and search files and folders.
 
 ```csharp
 using System;
@@ -1495,9 +1203,16 @@ namespace ExampleNamespace
             // Sync method call
             try
             {
-                var result = pixelbin.assets.updateCredentials(
-                    pluginId: "awsRek",
-                    credentials: new Dictionary<string, object> { { "region", "ap-south-1" }, { "accessKeyId", "123456789ABC" }, { "secretAccessKey", "DUMMY1234567890" } }
+                var result = pixelbin.assets.listFiles(
+                    name: "cat",
+                    path: "cat-photos",
+                    format: "jpeg",
+                    tags: new List<string>() {"cats","animals"},
+                    onlyFiles: "false",
+                    onlyFolders: "false",
+                    pageNo: 1,
+                    pageSize: 10,
+                    sort: "name"
                 );
                 // use result
             }
@@ -1509,9 +1224,16 @@ namespace ExampleNamespace
             // Async method call
             try
             {
-                var result = await pixelbin.assets.updateCredentialsAsync(
-                    pluginId: "awsRek",
-                    credentials: new Dictionary<string, object> { { "region", "ap-south-1" }, { "accessKeyId", "123456789ABC" }, { "secretAccessKey", "DUMMY1234567890" } }
+                var result = await pixelbin.assets.listFilesAsync(
+                    name: "cat",
+                    path: "cat-photos",
+                    format: "jpeg",
+                    tags: new List<string>() {"cats","animals"},
+                    onlyFiles: "false",
+                    onlyFolders: "false",
+                    pageNo: 1,
+                    pageSize: 10,
+                    sort: "name"
                 );
                 // use result
             }
@@ -1524,265 +1246,23 @@ namespace ExampleNamespace
 }
 ```
 
-| Argument    | Type                       | Required | Description                                          |
-| ----------- | -------------------------- | -------- | ---------------------------------------------------- |
-| pluginId    | string                     | yes      | ID of the plugin whose credentials are being updated |
-| credentials | Dictionary<string, object> | yes      | Credentials of the plugin                            |
+| Argument    | Type         | Required | Description                                                                  |
+| ----------- | ------------ | -------- | ---------------------------------------------------------------------------- |
+| name        | string       | no       | Find items with matching name                                                |
+| path        | string       | no       | Find items with matching path                                                |
+| format      | string       | no       | Find items with matching format                                              |
+| tags        | List<string> | no       | Find items containing these tags                                             |
+| onlyFiles   | bool         | no       | If true will fetch only files                                                |
+| onlyFolders | bool         | no       | If true will fetch only folders                                              |
+| pageNo      | int          | no       | Page No.                                                                     |
+| pageSize    | int          | no       | Page Size                                                                    |
+| sort        | string       | no       | Key to sort results by. A "-" suffix will sort results in descending orders. |
 
-Update credentials of a transformation module, for an organization.
-
-_Returned Response:_
-
-[AddCredentialsResponse](#addcredentialsresponse)
-
-Success
-
-<details>
-<summary><i>&nbsp; Example:</i></summary>
-
-```json
-{
-    "_id": "123ee789-7ae8-4336-b9bd-e4f33c049002",
-    "createdAt": "2022-10-04T09:52:09.545Z",
-    "updatedAt": "2022-10-04T09:52:09.545Z",
-    "orgId": 23,
-    "pluginId": "awsRek"
-}
-```
-
-</details>
-
-### deleteCredentials
-
-**Summary**: Delete credentials of a transformation module.
-
-```csharp
-using System;
-using System.Collections.Generic;
-using System.IO;
-using Pixelbin.Platform;
-
-namespace ExampleNamespace
-{
-    class ExampleClass
-    {
-        async void Main(string[] args)
-        {
-            PixelbinConfig config = new PixelbinConfig(
-                new Dictionary<string, string>() {
-                    { "domain", "https://api.pixelbin.io" },
-                    { "apiSecret", "API_SECRECT_TOKEN" }
-                });
-
-            PixelbinClient pixelbin = new PixelbinClient(config);
-
-            // Sync method call
-            try
-            {
-                var result = pixelbin.assets.deleteCredentials(
-                    pluginId: "awsRek"
-                );
-                // use result
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-
-            // Async method call
-            try
-            {
-                var result = await pixelbin.assets.deleteCredentialsAsync(
-                    pluginId: "awsRek"
-                );
-                // use result
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
-    }
-}
-```
-
-| Argument | Type   | Required | Description                                          |
-| -------- | ------ | -------- | ---------------------------------------------------- |
-| pluginId | string | yes      | ID of the plugin whose credentials are being deleted |
-
-Delete credentials of a transformation module, for an organization.
+List all files and folders in root folder. Search for files if name is provided. If path is provided, search in the specified path.
 
 _Returned Response:_
 
-[AddCredentialsResponse](#addcredentialsresponse)
-
-Success
-
-<details>
-<summary><i>&nbsp; Example:</i></summary>
-
-```json
-{
-    "_id": "123ee789-7ae8-4336-b9bd-e4f33c049002",
-    "createdAt": "2022-10-04T09:52:09.545Z",
-    "updatedAt": "2022-10-04T09:52:09.545Z",
-    "orgId": 23,
-    "pluginId": "awsRek"
-}
-```
-
-</details>
-
-### addPreset
-
-**Summary**: Add a preset.
-
-```csharp
-using System;
-using System.Collections.Generic;
-using System.IO;
-using Pixelbin.Platform;
-
-namespace ExampleNamespace
-{
-    class ExampleClass
-    {
-        async void Main(string[] args)
-        {
-            PixelbinConfig config = new PixelbinConfig(
-                new Dictionary<string, string>() {
-                    { "domain", "https://api.pixelbin.io" },
-                    { "apiSecret", "API_SECRECT_TOKEN" }
-                });
-
-            PixelbinClient pixelbin = new PixelbinClient(config);
-
-            // Sync method call
-            try
-            {
-                var result = pixelbin.assets.addPreset(
-                    presetName: p1,
-                    transformation: t.flip()~t.flop(),
-                    params: new Dictionary<string, object> { { "w", new Dictionary<string, object> { { "type", "integer" }, { "default", 200 } } }, { "h", new Dictionary<string, object> { { "type", "integer" }, { "default", 400 } } } }
-                );
-                // use result
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-
-            // Async method call
-            try
-            {
-                var result = await pixelbin.assets.addPresetAsync(
-                    presetName: p1,
-                    transformation: t.flip()~t.flop(),
-                    params: new Dictionary<string, object> { { "w", new Dictionary<string, object> { { "type", "integer" }, { "default", 200 } } }, { "h", new Dictionary<string, object> { { "type", "integer" }, { "default", 400 } } } }
-                );
-                // use result
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
-    }
-}
-```
-
-| Argument       | Type                       | Required | Description                                    |
-| -------------- | -------------------------- | -------- | ---------------------------------------------- |
-| presetName     | string                     | yes      | Name of the preset                             |
-| transformation | string                     | yes      | A chain of transformations, separated by `~`   |
-| params         | Dictionary<string, object> | no       | Parameters object for transformation variables |
-
-Add a preset for an organization.
-
-_Returned Response:_
-
-[AddPresetResponse](#addpresetresponse)
-
-Success
-
-<details>
-<summary><i>&nbsp; Example:</i></summary>
-
-```json
-{
-    "presetName": "p1",
-    "transformation": "t.flip()~t.flop()",
-    "params": {
-        "w": {
-            "type": "integer",
-            "default": 200
-        },
-        "h": {
-            "type": "integer",
-            "default": 400
-        }
-    },
-    "archived": false
-}
-```
-
-</details>
-
-### getPresets
-
-**Summary**: Get all presets.
-
-```csharp
-using System;
-using System.Collections.Generic;
-using System.IO;
-using Pixelbin.Platform;
-
-namespace ExampleNamespace
-{
-    class ExampleClass
-    {
-        async void Main(string[] args)
-        {
-            PixelbinConfig config = new PixelbinConfig(
-                new Dictionary<string, string>() {
-                    { "domain", "https://api.pixelbin.io" },
-                    { "apiSecret", "API_SECRECT_TOKEN" }
-                });
-
-            PixelbinClient pixelbin = new PixelbinClient(config);
-
-            // Sync method call
-            try
-            {
-                var result = pixelbin.assets.getPresets();
-                // use result
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-
-            // Async method call
-            try
-            {
-                var result = await pixelbin.assets.getPresetsAsync();
-                // use result
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
-    }
-}
-```
-
-Get all presets of an organization.
-
-_Returned Response:_
-
-[AddPresetResponse](#addpresetresponse)
+[ListFilesResponse](#listfilesresponse)
 
 Success
 
@@ -1793,297 +1273,37 @@ Success
 {
     "items": [
         {
-            "presetName": "p1",
-            "transformation": "t.flip()~t.flop()",
-            "params": {
-                "w": {
-                    "type": "integer",
-                    "default": 200
-                },
-                "h": {
-                    "type": "integer",
-                    "default": 400
-                }
-            },
-            "archived": true
+            "_id": "dummy-uuid",
+            "name": "dir",
+            "type": "folder"
+        },
+        {
+            "_id": "dummy-uuid",
+            "name": "asset2",
+            "type": "file",
+            "path": "dir",
+            "fileId": "dir/asset2",
+            "format": "jpeg",
+            "size": 1000,
+            "access": "private"
+        },
+        {
+            "_id": "dummy-uuid",
+            "name": "asset1",
+            "type": "file",
+            "path": "dir",
+            "fileId": "dir/asset1",
+            "format": "jpeg",
+            "size": 1000,
+            "access": "private"
         }
     ],
     "page": {
         "type": "number",
-        "size": 1,
+        "size": 4,
         "current": 1,
         "hasNext": false
     }
-}
-```
-
-</details>
-
-### updatePreset
-
-**Summary**: Update a preset.
-
-```csharp
-using System;
-using System.Collections.Generic;
-using System.IO;
-using Pixelbin.Platform;
-
-namespace ExampleNamespace
-{
-    class ExampleClass
-    {
-        async void Main(string[] args)
-        {
-            PixelbinConfig config = new PixelbinConfig(
-                new Dictionary<string, string>() {
-                    { "domain", "https://api.pixelbin.io" },
-                    { "apiSecret", "API_SECRECT_TOKEN" }
-                });
-
-            PixelbinClient pixelbin = new PixelbinClient(config);
-
-            // Sync method call
-            try
-            {
-                var result = pixelbin.assets.updatePreset(
-                    presetName: "p1",
-                    archived: True
-                );
-                // use result
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-
-            // Async method call
-            try
-            {
-                var result = await pixelbin.assets.updatePresetAsync(
-                    presetName: "p1",
-                    archived: True
-                );
-                // use result
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
-    }
-}
-```
-
-| Argument   | Type   | Required | Description                               |
-| ---------- | ------ | -------- | ----------------------------------------- |
-| presetName | string | yes      | Name of the preset to be updated          |
-| archived   | bool   | yes      | Indicates if the preset has been archived |
-
-Update a preset of an organization.
-
-_Returned Response:_
-
-[AddPresetResponse](#addpresetresponse)
-
-Success
-
-<details>
-<summary><i>&nbsp; Example:</i></summary>
-
-```json
-{
-    "presetName": "p1",
-    "transformation": "t.flip()~t.flop()",
-    "params": {
-        "w": {
-            "type": "integer",
-            "default": 200
-        },
-        "h": {
-            "type": "integer",
-            "default": 400
-        }
-    },
-    "archived": true
-}
-```
-
-</details>
-
-### deletePreset
-
-**Summary**: Delete a preset.
-
-```csharp
-using System;
-using System.Collections.Generic;
-using System.IO;
-using Pixelbin.Platform;
-
-namespace ExampleNamespace
-{
-    class ExampleClass
-    {
-        async void Main(string[] args)
-        {
-            PixelbinConfig config = new PixelbinConfig(
-                new Dictionary<string, string>() {
-                    { "domain", "https://api.pixelbin.io" },
-                    { "apiSecret", "API_SECRECT_TOKEN" }
-                });
-
-            PixelbinClient pixelbin = new PixelbinClient(config);
-
-            // Sync method call
-            try
-            {
-                var result = pixelbin.assets.deletePreset(
-                    presetName: "p1"
-                );
-                // use result
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-
-            // Async method call
-            try
-            {
-                var result = await pixelbin.assets.deletePresetAsync(
-                    presetName: "p1"
-                );
-                // use result
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
-    }
-}
-```
-
-| Argument   | Type   | Required | Description                      |
-| ---------- | ------ | -------- | -------------------------------- |
-| presetName | string | yes      | Name of the preset to be deleted |
-
-Delete a preset of an organization.
-
-_Returned Response:_
-
-[AddPresetResponse](#addpresetresponse)
-
-Success
-
-<details>
-<summary><i>&nbsp; Example:</i></summary>
-
-```json
-{
-    "presetName": "p1",
-    "transformation": "t.flip()~t.flop()",
-    "params": {
-        "w": {
-            "type": "integer",
-            "default": 200
-        },
-        "h": {
-            "type": "integer",
-            "default": 400
-        }
-    },
-    "archived": true
-}
-```
-
-</details>
-
-### getPreset
-
-**Summary**: Get a preset.
-
-```csharp
-using System;
-using System.Collections.Generic;
-using System.IO;
-using Pixelbin.Platform;
-
-namespace ExampleNamespace
-{
-    class ExampleClass
-    {
-        async void Main(string[] args)
-        {
-            PixelbinConfig config = new PixelbinConfig(
-                new Dictionary<string, string>() {
-                    { "domain", "https://api.pixelbin.io" },
-                    { "apiSecret", "API_SECRECT_TOKEN" }
-                });
-
-            PixelbinClient pixelbin = new PixelbinClient(config);
-
-            // Sync method call
-            try
-            {
-                var result = pixelbin.assets.getPreset(
-                    presetName: "p1"
-                );
-                // use result
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-
-            // Async method call
-            try
-            {
-                var result = await pixelbin.assets.getPresetAsync(
-                    presetName: "p1"
-                );
-                // use result
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
-    }
-}
-```
-
-| Argument   | Type   | Required | Description                      |
-| ---------- | ------ | -------- | -------------------------------- |
-| presetName | string | yes      | Name of the preset to be fetched |
-
-Get a preset of an organization.
-
-_Returned Response:_
-
-[AddPresetResponse](#addpresetresponse)
-
-Success
-
-<details>
-<summary><i>&nbsp; Example:</i></summary>
-
-```json
-{
-    "presetName": "p1",
-    "transformation": "t.flip()~t.flop()",
-    "params": {
-        "w": {
-            "type": "integer",
-            "default": 200
-        },
-        "h": {
-            "type": "integer",
-            "default": 400
-        }
-    },
-    "archived": true
 }
 ```
 
@@ -2152,19 +1372,25 @@ Success
 
 ```json
 {
-    "_id": "dummy-uuid",
-    "name": "asset",
-    "path": "dir",
-    "fileId": "dir/asset",
-    "format": "jpeg",
-    "size": 1000,
-    "access": "private",
     "isActive": true,
-    "tags": ["tag1", "tag2"],
-    "metadata": {
-        "key": "value"
-    },
-    "url": "https://domain.com/filename.jpeg"
+    "orgId": "1",
+    "type": "file",
+    "name": "abc.jpeg",
+    "path": "/xyz",
+    "fileId": "xyz/abc.jpeg",
+    "format": "jpeg",
+    "size": 100,
+    "tags": null,
+    "metadata": null,
+    "access": "public-read",
+    "width": null,
+    "height": null,
+    "meta": {},
+    "context": null,
+    "assetType": null,
+    "isOriginal": true,
+    "_id": "35675e3a-5dd8-4b19-a611-1cb64e676c5e",
+    "url": "https://cdn.pixelbin.io/v2/dummy-cloudname/original/xyz/abc.jpeg"
 }
 ```
 
@@ -2378,29 +1604,971 @@ Success
 
 </details>
 
+### addPreset
+
+**Summary**: Add a preset.
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Pixelbin.Platform;
+
+namespace ExampleNamespace
+{
+    class ExampleClass
+    {
+        async void Main(string[] args)
+        {
+            PixelbinConfig config = new PixelbinConfig(
+                new Dictionary<string, string>() {
+                    { "domain", "https://api.pixelbin.io" },
+                    { "apiSecret", "API_SECRECT_TOKEN" }
+                });
+
+            PixelbinClient pixelbin = new PixelbinClient(config);
+
+            // Sync method call
+            try
+            {
+                var result = pixelbin.assets.addPreset(
+                    presetName: pre-set_1,
+                    transformation: t.resize(w:$w,h:$h)~t.extract(),
+                    params: new Dictionary<string, object> { { "w", new Dictionary<string, object> { { "type", "integer" }, { "default", 200 } } }, { "h", new Dictionary<string, object> { { "type", "integer" }, { "default", 400 } } } }
+                );
+                // use result
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            // Async method call
+            try
+            {
+                var result = await pixelbin.assets.addPresetAsync(
+                    presetName: pre-set_1,
+                    transformation: t.resize(w:$w,h:$h)~t.extract(),
+                    params: new Dictionary<string, object> { { "w", new Dictionary<string, object> { { "type", "integer" }, { "default", 200 } } }, { "h", new Dictionary<string, object> { { "type", "integer" }, { "default", 400 } } } }
+                );
+                // use result
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+    }
+}
+```
+
+| Argument       | Type                       | Required | Description                                    |
+| -------------- | -------------------------- | -------- | ---------------------------------------------- |
+| presetName     | string                     | yes      | Name of the preset                             |
+| transformation | string                     | yes      | A chain of transformations, separated by `~`   |
+| params         | Dictionary<string, object> | no       | Parameters object for transformation variables |
+
+Add a preset for an organization.
+
+_Returned Response:_
+
+[AddPresetResponse](#addpresetresponse)
+
+Success
+
+<details>
+<summary><i>&nbsp; Example:</i></summary>
+
+```json
+{
+    "orgId": 23,
+    "presetName": "pre-set_1",
+    "transformation": "t.resize(w:$w,h:$h)~t.extract()",
+    "params": {
+        "w": {
+            "type": "integer",
+            "default": 200
+        },
+        "h": {
+            "type": "integer",
+            "default": 400
+        }
+    },
+    "_id": "821c6816-3cbb-40fd-8629-0098007fc949",
+    "createdAt": "2024-03-21T10:35:47.822Z",
+    "updatedAt": "2024-03-21T10:35:47.822Z",
+    "isActive": true,
+    "archived": false
+}
+```
+
+</details>
+
+### getPresets
+
+**Summary**: Get presets for an organization
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Pixelbin.Platform;
+
+namespace ExampleNamespace
+{
+    class ExampleClass
+    {
+        async void Main(string[] args)
+        {
+            PixelbinConfig config = new PixelbinConfig(
+                new Dictionary<string, string>() {
+                    { "domain", "https://api.pixelbin.io" },
+                    { "apiSecret", "API_SECRECT_TOKEN" }
+                });
+
+            PixelbinClient pixelbin = new PixelbinClient(config);
+
+            // Sync method call
+            try
+            {
+                var result = pixelbin.assets.getPresets(
+                    pageNo: 1,
+                    pageSize: 5,
+                    name: "t_0",
+                    transformation: "t.resize(a:0)",
+                    archived: "false",
+                    sort: new List<string>() {"updatedAt"}
+                );
+                // use result
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            // Async method call
+            try
+            {
+                var result = await pixelbin.assets.getPresetsAsync(
+                    pageNo: 1,
+                    pageSize: 5,
+                    name: "t_0",
+                    transformation: "t.resize(a:0)",
+                    archived: "false",
+                    sort: new List<string>() {"updatedAt"}
+                );
+                // use result
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+    }
+}
+```
+
+| Argument       | Type         | Required | Description                                     |
+| -------------- | ------------ | -------- | ----------------------------------------------- |
+| pageNo         | int          | no       | Page number                                     |
+| pageSize       | int          | no       | Page size                                       |
+| name           | string       | no       | Preset name                                     |
+| transformation | string       | no       | Transformation applied                          |
+| archived       | bool         | no       | Indicates whether the preset is archived or not |
+| sort           | List<string> | no       | Sort the results by a specific key              |
+
+Retrieve presets for a specific organization.
+
+_Returned Response:_
+
+[GetPresetsResponse](#getpresetsresponse)
+
+Success
+
+<details>
+<summary><i>&nbsp; Example:</i></summary>
+
+```json
+{
+    "items": [
+        {
+            "_id": "f1ae2fc0-a931-4cef-bd1a-3644dad5ae9b",
+            "createdAt": "2024-03-21T10:45:06.623Z",
+            "updatedAt": "2024-03-21T10:45:06.623Z",
+            "isActive": true,
+            "orgId": 23,
+            "presetName": "t_0",
+            "transformation": "t.resize(a:0)",
+            "archived": false,
+            "params": {}
+        },
+        {
+            "_id": "b40a03f1-7fa5-42b1-8cc6-ffe84c9e6629",
+            "createdAt": "2024-03-21T10:45:06.637Z",
+            "updatedAt": "2024-03-21T10:45:06.637Z",
+            "isActive": true,
+            "orgId": 23,
+            "presetName": "t_1",
+            "transformation": "t.resize(a:1)",
+            "archived": false,
+            "params": {}
+        }
+    ],
+    "page": {
+        "type": "number",
+        "size": 2,
+        "current": 1,
+        "hasNext": true,
+        "itemTotal": 10
+    }
+}
+```
+
+</details>
+
+### updatePreset
+
+**Summary**: Update a preset.
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Pixelbin.Platform;
+
+namespace ExampleNamespace
+{
+    class ExampleClass
+    {
+        async void Main(string[] args)
+        {
+            PixelbinConfig config = new PixelbinConfig(
+                new Dictionary<string, string>() {
+                    { "domain", "https://api.pixelbin.io" },
+                    { "apiSecret", "API_SECRECT_TOKEN" }
+                });
+
+            PixelbinClient pixelbin = new PixelbinClient(config);
+
+            // Sync method call
+            try
+            {
+                var result = pixelbin.assets.updatePreset(
+                    presetName: "p1",
+                    archived: True
+                );
+                // use result
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            // Async method call
+            try
+            {
+                var result = await pixelbin.assets.updatePresetAsync(
+                    presetName: "p1",
+                    archived: True
+                );
+                // use result
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+    }
+}
+```
+
+| Argument   | Type   | Required | Description                               |
+| ---------- | ------ | -------- | ----------------------------------------- |
+| presetName | string | yes      | Name of the preset to be updated          |
+| archived   | bool   | yes      | Indicates if the preset has been archived |
+
+Update a preset of an organization.
+
+_Returned Response:_
+
+[AddPresetResponse](#addpresetresponse)
+
+Success
+
+<details>
+<summary><i>&nbsp; Example:</i></summary>
+
+```json
+{
+    "orgId": 23,
+    "presetName": "pre-set_1",
+    "transformation": "t.resize(w:$w,h:$h)~t.extract()",
+    "params": {
+        "w": {
+            "type": "integer",
+            "default": 200
+        },
+        "h": {
+            "type": "integer",
+            "default": 400
+        }
+    },
+    "_id": "821c6816-3cbb-40fd-8629-0098007fc949",
+    "createdAt": "2024-03-21T10:35:47.822Z",
+    "updatedAt": "2024-03-21T10:35:47.822Z",
+    "isActive": true,
+    "archived": true
+}
+```
+
+</details>
+
+### deletePreset
+
+**Summary**: Delete a preset.
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Pixelbin.Platform;
+
+namespace ExampleNamespace
+{
+    class ExampleClass
+    {
+        async void Main(string[] args)
+        {
+            PixelbinConfig config = new PixelbinConfig(
+                new Dictionary<string, string>() {
+                    { "domain", "https://api.pixelbin.io" },
+                    { "apiSecret", "API_SECRECT_TOKEN" }
+                });
+
+            PixelbinClient pixelbin = new PixelbinClient(config);
+
+            // Sync method call
+            try
+            {
+                var result = pixelbin.assets.deletePreset(
+                    presetName: "pre-set_1"
+                );
+                // use result
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            // Async method call
+            try
+            {
+                var result = await pixelbin.assets.deletePresetAsync(
+                    presetName: "pre-set_1"
+                );
+                // use result
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+    }
+}
+```
+
+| Argument   | Type   | Required | Description                      |
+| ---------- | ------ | -------- | -------------------------------- |
+| presetName | string | yes      | Name of the preset to be deleted |
+
+Delete a preset of an organization.
+
+_Returned Response:_
+
+[AddPresetResponse](#addpresetresponse)
+
+Success
+
+<details>
+<summary><i>&nbsp; Example:</i></summary>
+
+```json
+{
+    "orgId": 23,
+    "presetName": "pre-set_1",
+    "transformation": "t.resize(w:$w,h:$h)~t.extract()",
+    "params": {
+        "w": {
+            "type": "integer",
+            "default": 200
+        },
+        "h": {
+            "type": "integer",
+            "default": 400
+        }
+    },
+    "_id": "821c6816-3cbb-40fd-8629-0098007fc949",
+    "createdAt": "2024-03-21T10:35:47.822Z",
+    "updatedAt": "2024-03-21T10:35:47.822Z",
+    "isActive": true,
+    "archived": false
+}
+```
+
+</details>
+
+### getPreset
+
+**Summary**: Get a preset.
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Pixelbin.Platform;
+
+namespace ExampleNamespace
+{
+    class ExampleClass
+    {
+        async void Main(string[] args)
+        {
+            PixelbinConfig config = new PixelbinConfig(
+                new Dictionary<string, string>() {
+                    { "domain", "https://api.pixelbin.io" },
+                    { "apiSecret", "API_SECRECT_TOKEN" }
+                });
+
+            PixelbinClient pixelbin = new PixelbinClient(config);
+
+            // Sync method call
+            try
+            {
+                var result = pixelbin.assets.getPreset(
+                    presetName: "p1"
+                );
+                // use result
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            // Async method call
+            try
+            {
+                var result = await pixelbin.assets.getPresetAsync(
+                    presetName: "p1"
+                );
+                // use result
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+    }
+}
+```
+
+| Argument   | Type   | Required | Description                      |
+| ---------- | ------ | -------- | -------------------------------- |
+| presetName | string | yes      | Name of the preset to be fetched |
+
+Get a preset of an organization.
+
+_Returned Response:_
+
+[AddPresetResponse](#addpresetresponse)
+
+Success
+
+<details>
+<summary><i>&nbsp; Example:</i></summary>
+
+```json
+{
+    "orgId": 23,
+    "presetName": "p1",
+    "transformation": "t.resize(w:$w,h:$h)~t.extract()",
+    "params": {
+        "w": {
+            "type": "integer",
+            "default": 200
+        },
+        "h": {
+            "type": "integer",
+            "default": 400
+        }
+    },
+    "_id": "821c6816-3cbb-40fd-8629-0098007fc949",
+    "createdAt": "2024-03-21T10:35:47.822Z",
+    "updatedAt": "2024-03-21T10:35:47.822Z",
+    "isActive": true,
+    "archived": false
+}
+```
+
+</details>
+
+### fileUpload
+
+**Summary**: Upload File
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Pixelbin.Platform;
+
+namespace ExampleNamespace
+{
+    class ExampleClass
+    {
+        async void Main(string[] args)
+        {
+            PixelbinConfig config = new PixelbinConfig(
+                new Dictionary<string, string>() {
+                    { "domain", "https://api.pixelbin.io" },
+                    { "apiSecret", "API_SECRECT_TOKEN" }
+                });
+
+            PixelbinClient pixelbin = new PixelbinClient(config);
+
+            // Sync method call
+            try
+            {
+                var result = pixelbin.assets.fileUpload(
+                    file: new FileStream("your-file-path", FileMode.Open),
+                    path: path/to/containing/folder,
+                    name: filename,
+                    access: public-read,
+                    tags: new List<string>() { "tag1", "tag2" },
+                    metadata: new Dictionary<string, object> {  },
+                    overwrite: False,
+                    filenameOverride: True
+                );
+                // use result
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            // Async method call
+            try
+            {
+                var result = await pixelbin.assets.fileUploadAsync(
+                    file: new FileStream("your-file-path", FileMode.Open),
+                    path: path/to/containing/folder,
+                    name: filename,
+                    access: public-read,
+                    tags: new List<string>() { "tag1", "tag2" },
+                    metadata: new Dictionary<string, object> {  },
+                    overwrite: False,
+                    filenameOverride: True
+                );
+                // use result
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+    }
+}
+```
+
+| Argument         | Type                       | Required | Description                                                                                                                                                                                                                      |
+| ---------------- | -------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| file             | FileStream                 | yes      | Asset file                                                                                                                                                                                                                       |
+| path             | string                     | no       | Path where you want to store the asset                                                                                                                                                                                           |
+| name             | string                     | no       | Name of the asset, if not provided name of the file will be used. Note - The provided name will be slugified to make it URL safe                                                                                                 |
+| access           | AccessEnum                 | no       | Access level of asset, can be either `public-read` or `private`                                                                                                                                                                  |
+| tags             | List<string>               | no       | Asset tags                                                                                                                                                                                                                       |
+| metadata         | Dictionary<string, object> | no       | Asset related metadata                                                                                                                                                                                                           |
+| overwrite        | bool                       | no       | Overwrite flag. If set to `true` will overwrite any file that exists with same path, name and type. Defaults to `false`.                                                                                                         |
+| filenameOverride | bool                       | no       | If set to `true` will add unique characters to name if asset with given name already exists. If overwrite flag is set to `true`, preference will be given to overwrite flag. If both are set to `false` an error will be raised. |
+
+Upload File to Pixelbin
+
+_Returned Response:_
+
+[UploadResponse](#uploadresponse)
+
+Success
+
+<details>
+<summary><i>&nbsp; Example:</i></summary>
+
+```json
+{
+    "_id": "dummy-uuid",
+    "name": "asset",
+    "path": "dir",
+    "fileId": "dir/asset",
+    "format": "jpeg",
+    "size": 1000,
+    "access": "private",
+    "isActive": true,
+    "tags": ["tag1", "tag2"],
+    "metadata": {
+        "key": "value"
+    },
+    "url": "https://domain.com/filename.jpeg"
+}
+```
+
+</details>
+
+### urlUpload
+
+**Summary**: Upload Asset with url
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Pixelbin.Platform;
+
+namespace ExampleNamespace
+{
+    class ExampleClass
+    {
+        async void Main(string[] args)
+        {
+            PixelbinConfig config = new PixelbinConfig(
+                new Dictionary<string, string>() {
+                    { "domain", "https://api.pixelbin.io" },
+                    { "apiSecret", "API_SECRECT_TOKEN" }
+                });
+
+            PixelbinClient pixelbin = new PixelbinClient(config);
+
+            // Sync method call
+            try
+            {
+                var result = pixelbin.assets.urlUpload(
+                    url: www.dummy.com/image.png,
+                    path: path/to/containing/folder,
+                    name: filename,
+                    access: public-read,
+                    tags: new List<string>() { "tag1", "tag2" },
+                    metadata: new Dictionary<string, object> {  },
+                    overwrite: False,
+                    filenameOverride: True
+                );
+                // use result
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            // Async method call
+            try
+            {
+                var result = await pixelbin.assets.urlUploadAsync(
+                    url: www.dummy.com/image.png,
+                    path: path/to/containing/folder,
+                    name: filename,
+                    access: public-read,
+                    tags: new List<string>() { "tag1", "tag2" },
+                    metadata: new Dictionary<string, object> {  },
+                    overwrite: False,
+                    filenameOverride: True
+                );
+                // use result
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+    }
+}
+```
+
+| Argument         | Type                       | Required | Description                                                                                                                                                                                                                      |
+| ---------------- | -------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| url              | string                     | yes      | Asset URL                                                                                                                                                                                                                        |
+| path             | string                     | no       | Path where you want to store the asset                                                                                                                                                                                           |
+| name             | string                     | no       | Name of the asset, if not provided name of the file will be used. Note - The provided name will be slugified to make it URL safe                                                                                                 |
+| access           | AccessEnum                 | no       | Access level of asset, can be either `public-read` or `private`                                                                                                                                                                  |
+| tags             | List<string>               | no       | Asset tags                                                                                                                                                                                                                       |
+| metadata         | Dictionary<string, object> | no       | Asset related metadata                                                                                                                                                                                                           |
+| overwrite        | bool                       | no       | Overwrite flag. If set to `true` will overwrite any file that exists with same path, name and type. Defaults to `false`.                                                                                                         |
+| filenameOverride | bool                       | no       | If set to `true` will add unique characters to name if asset with given name already exists. If overwrite flag is set to `true`, preference will be given to overwrite flag. If both are set to `false` an error will be raised. |
+
+Upload Asset with url
+
+_Returned Response:_
+
+[UploadResponse](#uploadresponse)
+
+Success
+
+<details>
+<summary><i>&nbsp; Example:</i></summary>
+
+```json
+{
+    "_id": "dummy-uuid",
+    "name": "asset",
+    "path": "dir",
+    "fileId": "dir/asset",
+    "format": "jpeg",
+    "size": 1000,
+    "access": "private",
+    "isActive": true,
+    "tags": ["tag1", "tag2"],
+    "metadata": {
+        "key": "value"
+    },
+    "url": "https://domain.com/filename.jpeg"
+}
+```
+
+</details>
+
+### createSignedUrl
+
+**Summary**: S3 Signed URL upload
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Pixelbin.Platform;
+
+namespace ExampleNamespace
+{
+    class ExampleClass
+    {
+        async void Main(string[] args)
+        {
+            PixelbinConfig config = new PixelbinConfig(
+                new Dictionary<string, string>() {
+                    { "domain", "https://api.pixelbin.io" },
+                    { "apiSecret", "API_SECRECT_TOKEN" }
+                });
+
+            PixelbinClient pixelbin = new PixelbinClient(config);
+
+            // Sync method call
+            try
+            {
+                var result = pixelbin.assets.createSignedUrl(
+                    name: filename,
+                    path: path/to/containing/folder,
+                    format: jpeg,
+                    access: public-read,
+                    tags: new List<string>() { "tag1", "tag2" },
+                    metadata: new Dictionary<string, object> {  },
+                    overwrite: False,
+                    filenameOverride: True
+                );
+                // use result
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            // Async method call
+            try
+            {
+                var result = await pixelbin.assets.createSignedUrlAsync(
+                    name: filename,
+                    path: path/to/containing/folder,
+                    format: jpeg,
+                    access: public-read,
+                    tags: new List<string>() { "tag1", "tag2" },
+                    metadata: new Dictionary<string, object> {  },
+                    overwrite: False,
+                    filenameOverride: True
+                );
+                // use result
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+    }
+}
+```
+
+| Argument         | Type                       | Required | Description                                                                                                                                                                                                                      |
+| ---------------- | -------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| name             | string                     | no       | name of the file                                                                                                                                                                                                                 |
+| path             | string                     | no       | Path of the file                                                                                                                                                                                                                 |
+| format           | string                     | no       | Format of the file                                                                                                                                                                                                               |
+| access           | AccessEnum                 | no       | Access level of asset, can be either `public-read` or `private`                                                                                                                                                                  |
+| tags             | List<string>               | no       | Tags associated with the file.                                                                                                                                                                                                   |
+| metadata         | Dictionary<string, object> | no       | Metadata associated with the file.                                                                                                                                                                                               |
+| overwrite        | bool                       | no       | Overwrite flag. If set to `true` will overwrite any file that exists with same path, name and type. Defaults to `false`.                                                                                                         |
+| filenameOverride | bool                       | no       | If set to `true` will add unique characters to name if asset with given name already exists. If overwrite flag is set to `true`, preference will be given to overwrite flag. If both are set to `false` an error will be raised. |
+
+For the given asset details, a S3 signed URL will be generated,
+which can be then used to upload your asset.
+
+_Returned Response:_
+
+[SignedUploadResponse](#signeduploadresponse)
+
+Success
+
+<details>
+<summary><i>&nbsp; Example:</i></summary>
+
+```json
+{
+    "s3PresignedUrl": {
+        "url": "https://domain.com/xyz",
+        "fields": {
+            "field1": "value",
+            "field2": "value"
+        }
+    }
+}
+```
+
+</details>
+
+### createSignedUrlV2
+
+**Summary**: Signed multipart upload
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Pixelbin.Platform;
+
+namespace ExampleNamespace
+{
+    class ExampleClass
+    {
+        async void Main(string[] args)
+        {
+            PixelbinConfig config = new PixelbinConfig(
+                new Dictionary<string, string>() {
+                    { "domain", "https://api.pixelbin.io" },
+                    { "apiSecret", "API_SECRECT_TOKEN" }
+                });
+
+            PixelbinClient pixelbin = new PixelbinClient(config);
+
+            // Sync method call
+            try
+            {
+                var result = pixelbin.assets.createSignedUrlV2(
+                    name: filename,
+                    path: path/to/containing/folder,
+                    format: jpeg,
+                    access: public-read,
+                    tags: new List<string>() { "tag1", "tag2" },
+                    metadata: new Dictionary<string, object> {  },
+                    overwrite: False,
+                    filenameOverride: True,
+                    expiry: 3000
+                );
+                // use result
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            // Async method call
+            try
+            {
+                var result = await pixelbin.assets.createSignedUrlV2Async(
+                    name: filename,
+                    path: path/to/containing/folder,
+                    format: jpeg,
+                    access: public-read,
+                    tags: new List<string>() { "tag1", "tag2" },
+                    metadata: new Dictionary<string, object> {  },
+                    overwrite: False,
+                    filenameOverride: True,
+                    expiry: 3000
+                );
+                // use result
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+    }
+}
+```
+
+| Argument         | Type                       | Required | Description                                                                                                                                                                                                                      |
+| ---------------- | -------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| name             | string                     | no       | name of the file                                                                                                                                                                                                                 |
+| path             | string                     | no       | Path of containing folder.                                                                                                                                                                                                       |
+| format           | string                     | no       | Format of the file                                                                                                                                                                                                               |
+| access           | AccessEnum                 | no       | Access level of asset, can be either `public-read` or `private`                                                                                                                                                                  |
+| tags             | List<string>               | no       | Tags associated with the file.                                                                                                                                                                                                   |
+| metadata         | Dictionary<string, object> | no       | Metadata associated with the file.                                                                                                                                                                                               |
+| overwrite        | bool                       | no       | Overwrite flag. If set to `true` will overwrite any file that exists with same path, name and type. Defaults to `false`.                                                                                                         |
+| filenameOverride | bool                       | no       | If set to `true` will add unique characters to name if asset with given name already exists. If overwrite flag is set to `true`, preference will be given to overwrite flag. If both are set to `false` an error will be raised. |
+| expiry           | int                        | no       | Expiry time in seconds for the signed URL. Defaults to 3000 seconds.                                                                                                                                                             |
+
+For the given asset details, a presigned URL will be generated, which can be then used to upload your asset in chunks via multipart upload.
+
+_Returned Response:_
+
+[SignedUploadV2Response](#signeduploadv2response)
+
+Success
+
+<details>
+<summary><i>&nbsp; Example:</i></summary>
+
+```json
+{
+    "presignedUrl": {
+        "url": "https://api.pixelbin.io/service/public/assets/v1.0/signed-multipart?pbs=8b49e6cdd446be379aa4396e1a&pbe=1700600070390&pbt=92661&pbo=143209&pbu=5fe187e8-8649-4546-9a28-ff551839e0f5",
+        "fields": {
+            "x-pixb-meta-assetdata": "{\"orgId\":1,\"type\":\"file\",\"name\":\"filename.jpeg\",\"path\":\"\",\"fileId\":\"filename.jpeg\",\"format\":\"jpeg\",\"s3Bucket\":\"erase-erase-erasebg-assets\",\"s3Key\":\"uploads/floral-sun-9617c8/original/a34f1d3-28bf-489c-9aff-cc549ac9e003.jpeg\",\"access\":\"public-read\",\"tags\":[],\"metadata\":{\"source\":\"signedUrl\",\"publicUploadId\":\"5fe187e8-8649-4546-9a28-ff551839e0f5\"},\"overwrite\":false,\"filenameOverride\":false}"
+        }
+    }
+}
+```
+
+</details>
+
 ### Schemas
 
 #### folderItem
 
 | Properties | Type   | Nullable | Description                          |
 | ---------- | ------ | -------- | ------------------------------------ |
-| \_id       | string | yes      | Id of the folder item                |
-| name       | string | yes      | Name of the folder item              |
-| path       | string | yes      | Path of containing folder            |
-| type       | string | yes      | Type of the item. `file` or `folder` |
+| \_id       | string | no       | Id of the folder item                |
+| orgId      | int    | no       | Organization Id                      |
+| name       | string | no       | Name of the folder item              |
+| path       | string | no       | Path of the folder item              |
+| type       | string | no       | Type of the item. `file` or `folder` |
 
 #### exploreItem
 
-| Properties | Type   | Nullable | Description                                                     |
-| ---------- | ------ | -------- | --------------------------------------------------------------- |
-| \_id       | string | yes      | id of the exploreItem                                           |
-| name       | string | yes      | name of the item                                                |
-| type       | string | yes      | Type of item whether `file` or `folder`                         |
-| path       | string | yes      | Path of containing folder                                       |
-| fileId     | string | no       | Combination of `path` and `name` of file                        |
-| format     | string | no       | Format of the file                                              |
-| size       | int    | no       | Size of the file in bytes                                       |
-| access     | string | no       | Access level of asset, can be either `public-read` or `private` |
+| Properties | Type       | Nullable | Description                                                     |
+| ---------- | ---------- | -------- | --------------------------------------------------------------- |
+| \_id       | string     | no       | id of the exploreItem                                           |
+| orgId      | int        | no       | Organization Id                                                 |
+| name       | string     | no       | name of the item                                                |
+| type       | string     | no       | Type of item whether `file` or `folder`                         |
+| path       | string     | no       | Path of the folder item                                         |
+| fileId     | string     | no       | FileId associated with the item. `path`+`name`                  |
+| format     | string     | no       | Format of the file                                              |
+| size       | int        | no       | Size of the file in bytes                                       |
+| access     | AccessEnum | no       | Access level of asset, can be either `public-read` or `private` |
+| s3Bucket   | string     | no       | Bucket Name                                                     |
+| s3Key      | string     | no       | s3 path of file                                                 |
 
 #### page
 
@@ -2423,23 +2591,15 @@ Success
 
 | Properties | Type              | Nullable | Description                  |
 | ---------- | ----------------- | -------- | ---------------------------- |
-| items      | List<ExploreItem> | yes      | exploreItems in current page |
-| page       | Page              | yes      | page details                 |
-
-#### exploreFolderResponse
-
-| Properties | Type              | Nullable | Description                  |
-| ---------- | ----------------- | -------- | ---------------------------- |
-| folder     | FolderItem        | yes      | requested folder item        |
-| items      | List<ExploreItem> | yes      | exploreItems in current page |
-| page       | Page              | yes      | page details                 |
+| items      | List<ExploreItem> | no       | exploreItems in current page |
+| page       | Page              | no       | page details                 |
 
 #### FileUploadRequest
 
 | Properties       | Type                       | Nullable | Description                                                                                                                                                                                                                      |
 | ---------------- | -------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | file             | FileStream                 | yes      | Asset file                                                                                                                                                                                                                       |
-| path             | string                     | no       | Path where you want to store the asset. Path of containing folder                                                                                                                                                                |
+| path             | string                     | no       | Path where you want to store the asset                                                                                                                                                                                           |
 | name             | string                     | no       | Name of the asset, if not provided name of the file will be used. Note - The provided name will be slugified to make it URL safe                                                                                                 |
 | access           | AccessEnum                 | no       | Access level of asset, can be either `public-read` or `private`                                                                                                                                                                  |
 | tags             | List<string>               | no       | Asset tags                                                                                                                                                                                                                       |
@@ -2452,7 +2612,7 @@ Success
 | Properties       | Type                       | Nullable | Description                                                                                                                                                                                                                      |
 | ---------------- | -------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | url              | string                     | yes      | Asset URL                                                                                                                                                                                                                        |
-| path             | string                     | no       | Path where you want to store the asset. Path of containing folder.                                                                                                                                                               |
+| path             | string                     | no       | Path where you want to store the asset                                                                                                                                                                                           |
 | name             | string                     | no       | Name of the asset, if not provided name of the file will be used. Note - The provided name will be slugified to make it URL safe                                                                                                 |
 | access           | AccessEnum                 | no       | Access level of asset, can be either `public-read` or `private`                                                                                                                                                                  |
 | tags             | List<string>               | no       | Asset tags                                                                                                                                                                                                                       |
@@ -2465,12 +2625,12 @@ Success
 | Properties | Type                       | Nullable | Description                                                 |
 | ---------- | -------------------------- | -------- | ----------------------------------------------------------- |
 | \_id       | string                     | yes      | \_id of the item                                            |
-| fileId     | string                     | yes      | Combination of `path` and `name` of file                    |
+| fileId     | string                     | yes      | FileId associated with the item. path+name                  |
 | name       | string                     | yes      | name of the item                                            |
 | path       | string                     | yes      | path to the parent folder                                   |
 | format     | string                     | yes      | format of the file                                          |
 | size       | int                        | yes      | size of file in bytes                                       |
-| access     | string                     | yes      | Access level of asset, can be either public-read or private |
+| access     | AccessEnum                 | yes      | Access level of asset, can be either public-read or private |
 | tags       | List<string>               | no       | tags associated with the item                               |
 | metadata   | Dictionary<string, object> | no       | metadata associated with the item                           |
 | url        | string                     | no       | url of the item                                             |
@@ -2481,7 +2641,7 @@ Success
 | Properties       | Type                       | Nullable | Description                                                                                                                                                                                                                      |
 | ---------------- | -------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | name             | string                     | no       | name of the file                                                                                                                                                                                                                 |
-| path             | string                     | no       | Path of containing folder.                                                                                                                                                                                                       |
+| path             | string                     | no       | Path of the file                                                                                                                                                                                                                 |
 | format           | string                     | no       | Format of the file                                                                                                                                                                                                               |
 | access           | AccessEnum                 | no       | Access level of asset, can be either `public-read` or `private`                                                                                                                                                                  |
 | tags             | List<string>               | no       | Tags associated with the file.                                                                                                                                                                                                   |
@@ -2510,11 +2670,11 @@ Success
 | ---------- | -------------------------- | -------- | -------------------------------------------------------------- |
 | \_id       | string                     | yes      | \_id of the file                                               |
 | name       | string                     | yes      | name of the file                                               |
-| path       | string                     | yes      | path of containing folder.                                     |
-| fileId     | string                     | yes      | Combination of `path` and `name` of file                       |
+| path       | string                     | yes      | path to the parent folder of the file                          |
+| fileId     | string                     | yes      | FileId associated with the item. `path`+`name`                 |
 | format     | string                     | yes      | format of the file                                             |
 | size       | int                        | yes      | size of the file in bytes                                      |
-| access     | string                     | yes      | Access level of file, can be either `public-read` or `private` |
+| access     | AccessEnum                 | yes      | Access level of file, can be either `public-read` or `private` |
 | isActive   | bool                       | yes      | Whether the file is active                                     |
 | tags       | List<string>               | no       | Tags associated with the file                                  |
 | metadata   | Dictionary<string, object> | no       | Metadata associated with the file                              |
@@ -2526,41 +2686,33 @@ Success
 | Properties | Type                       | Nullable | Description                                                     |
 | ---------- | -------------------------- | -------- | --------------------------------------------------------------- |
 | name       | string                     | no       | Name of the file                                                |
-| path       | string                     | no       | path of containing folder.                                      |
-| access     | string                     | no       | Access level of asset, can be either `public-read` or `private` |
+| path       | string                     | no       | Path of the file                                                |
+| access     | AccessEnum                 | no       | Access level of asset, can be either `public-read` or `private` |
 | isActive   | bool                       | no       | Whether the file is active                                      |
 | tags       | List<string>               | no       | Tags associated with the file                                   |
 | metadata   | Dictionary<string, object> | no       | Metadata associated with the file                               |
 
 #### FoldersResponse
 
-| Properties | Type   | Nullable | Description                  |
-| ---------- | ------ | -------- | ---------------------------- |
-| \_id       | string | yes      | \_id of the folder           |
-| name       | string | yes      | name of the folder           |
-| path       | string | yes      | path of containing folder.   |
-| isActive   | bool   | yes      | whether the folder is active |
+| Properties | Type   | Nullable | Description                             |
+| ---------- | ------ | -------- | --------------------------------------- |
+| \_id       | string | yes      | \_id of the folder                      |
+| name       | string | yes      | name of the folder                      |
+| path       | string | yes      | path to the parent folder of the folder |
+| isActive   | bool   | yes      | whether the folder is active            |
 
 #### CreateFolderRequest
 
-| Properties | Type   | Nullable | Description                |
-| ---------- | ------ | -------- | -------------------------- |
-| name       | string | yes      | Name of the folder         |
-| path       | string | no       | path of containing folder. |
+| Properties | Type   | Nullable | Description        |
+| ---------- | ------ | -------- | ------------------ |
+| name       | string | yes      | Name of the folder |
+| path       | string | no       | Path of the folder |
 
 #### UpdateFolderRequest
 
 | Properties | Type | Nullable | Description                  |
 | ---------- | ---- | -------- | ---------------------------- |
 | isActive   | bool | no       | whether the folder is active |
-
-#### TransformationModulesResponse
-
-| Properties | Type                             | Nullable | Description                                         |
-| ---------- | -------------------------------- | -------- | --------------------------------------------------- |
-| delimiters | Delimiter                        | no       | Delimiter for parsing plugin schema                 |
-| plugins    | Dictionary<string, object>       | no       | Transformations currently supported by the pixelbin |
-| presets    | List<Dictionary<string, object>> | no       | List of saved presets                               |
 
 #### DeleteMultipleFilesRequest
 
@@ -2574,36 +2726,6 @@ Success
 | ------------------ | ------ | -------- | ------------------------------------------------------------------------ |
 | operationSeparator | string | no       | separator to separate operations in the url pattern                      |
 | parameterSeparator | string | no       | separator to separate parameters used with operations in the url pattern |
-
-#### TransformationModuleResponse
-
-| Properties  | Type                             | Nullable | Description                                     |
-| ----------- | -------------------------------- | -------- | ----------------------------------------------- |
-| identifier  | string                           | no       | identifier for the plugin type                  |
-| name        | string                           | no       | name of the plugin                              |
-| description | string                           | no       | description of the plugin                       |
-| credentials | Dictionary<string, object>       | no       | credentials, if any, associated with the plugin |
-| operations  | List<Dictionary<string, object>> | no       | supported operations in the plugin              |
-| enabled     | bool                             | no       | whether the plugin is enabled                   |
-
-#### Credentials
-
-| Properties  | Type                       | Nullable | Description                                                 |
-| ----------- | -------------------------- | -------- | ----------------------------------------------------------- |
-| \_id        | string                     | no       | Unique ID for credential                                    |
-| createdAt   | string                     | no       | Credential creation ISO timestamp                           |
-| updatedAt   | string                     | no       | Credential update ISO timestamp                             |
-| isActive    | bool                       | no       | Tells if credential is active or not                        |
-| orgId       | string                     | no       | ID of the organization this credential belongs to           |
-| pluginId    | string                     | no       | Unique identifier for the plugin this credential belongs to |
-| credentials | Dictionary<string, object> | no       | Credentials object. It is different for each plugin         |
-| description | Dictionary<string, object> | no       |                                                             |
-
-#### CredentialsItem
-
-| Properties | Type                       | Nullable | Description |
-| ---------- | -------------------------- | -------- | ----------- |
-| pluginId   | Dictionary<string, object> | no       |             |
 
 #### AddCredentialsRequest
 
@@ -2624,40 +2746,12 @@ Success
 | ----------- | -------------------------- | -------- | ----------- |
 | credentials | Dictionary<string, object> | no       |             |
 
-#### DeleteCredentialsResponse
-
-| Properties  | Type                       | Nullable | Description                                                 |
-| ----------- | -------------------------- | -------- | ----------------------------------------------------------- |
-| \_id        | string                     | no       | Unique Credential ID                                        |
-| createdAt   | string                     | no       | Credential creation ISO timestamp                           |
-| updatedAt   | string                     | no       | Credential update ISO timestamp                             |
-| isActive    | bool                       | no       | Tells if credential is active or not                        |
-| orgId       | string                     | no       | ID of the organization this credential belongs to           |
-| pluginId    | string                     | no       | Unique identifier for the plugin this credential belongs to |
-| credentials | Dictionary<string, object> | no       | Credentials object. It is different for each plugin         |
-
 #### GetAncestorsResponse
 
 | Properties | Type                  | Nullable | Description |
 | ---------- | --------------------- | -------- | ----------- |
 | folder     | FolderItem            | no       |             |
 | ancestors  | List<FoldersResponse> | no       |             |
-
-#### GetFilesWithConstraintsItem
-
-| Properties | Type   | Nullable | Description |
-| ---------- | ------ | -------- | ----------- |
-| path       | string | no       |             |
-| name       | string | no       |             |
-| type       | string | no       |             |
-
-#### GetFilesWithConstraintsRequest
-
-| Properties | Type                              | Nullable | Description |
-| ---------- | --------------------------------- | -------- | ----------- |
-| items      | List<GetFilesWithConstraintsItem> | no       |             |
-| maxCount   | float                             | no       |             |
-| maxSize    | float                             | no       |             |
 
 #### AddPresetRequest
 
@@ -2671,10 +2765,14 @@ Success
 
 | Properties     | Type                       | Nullable | Description                                    |
 | -------------- | -------------------------- | -------- | ---------------------------------------------- |
-| presetName     | string                     | yes      | Name of the preset                             |
-| transformation | string                     | yes      | A chain of transformations, separated by `~`   |
+| presetName     | string                     | no       | Name of the preset                             |
+| transformation | string                     | no       | A chain of transformations, separated by `~`   |
 | params         | Dictionary<string, object> | no       | Parameters object for transformation variables |
 | archived       | bool                       | no       | Indicates if the preset has been archived      |
+| orgId          | int                        | no       | Organization Id                                |
+| isActive       | bool                       | no       | Indicates if the preset is active              |
+| createdAt      | string                     | no       | Preset creation ISO timestamp                  |
+| updatedAt      | string                     | no       | Preset update ISO timestamp                    |
 
 #### UpdatePresetRequest
 
@@ -2684,10 +2782,56 @@ Success
 
 #### GetPresetsResponse
 
-| Properties | Type                    | Nullable | Description             |
-| ---------- | ----------------------- | -------- | ----------------------- |
-| items      | List<AddPresetResponse> | yes      | Presets in current page |
-| page       | Page                    | yes      | page details            |
+| Properties | Type                    | Nullable | Description  |
+| ---------- | ----------------------- | -------- | ------------ |
+| items      | List<AddPresetResponse> | yes      |              |
+| page       | Page                    | yes      | page details |
+
+#### TransformationModuleResponse
+
+| Properties  | Type                             | Nullable | Description                                     |
+| ----------- | -------------------------------- | -------- | ----------------------------------------------- |
+| identifier  | string                           | no       | identifier for the plugin type                  |
+| name        | string                           | no       | name of the plugin                              |
+| description | string                           | no       | description of the plugin                       |
+| credentials | Dictionary<string, object>       | no       | credentials, if any, associated with the plugin |
+| operations  | List<Dictionary<string, object>> | no       | supported operations in the plugin              |
+| enabled     | bool                             | no       | whether the plugin is enabled                   |
+
+#### TransformationModulesResponse
+
+| Properties | Type                             | Nullable | Description                                         |
+| ---------- | -------------------------------- | -------- | --------------------------------------------------- |
+| delimiters | Delimiter                        | no       | Delimiter for parsing plugin schema                 |
+| plugins    | Dictionary<string, object>       | no       | Transformations currently supported by the pixelbin |
+| presets    | List<Dictionary<string, object>> | no       | List of saved presets                               |
+
+#### SignedUploadRequestV2
+
+| Properties       | Type                       | Nullable | Description                                                                                                                                                                                                                      |
+| ---------------- | -------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| name             | string                     | no       | name of the file                                                                                                                                                                                                                 |
+| path             | string                     | no       | Path of containing folder.                                                                                                                                                                                                       |
+| format           | string                     | no       | Format of the file                                                                                                                                                                                                               |
+| access           | AccessEnum                 | no       | Access level of asset, can be either `public-read` or `private`                                                                                                                                                                  |
+| tags             | List<string>               | no       | Tags associated with the file.                                                                                                                                                                                                   |
+| metadata         | Dictionary<string, object> | no       | Metadata associated with the file.                                                                                                                                                                                               |
+| overwrite        | bool                       | no       | Overwrite flag. If set to `true` will overwrite any file that exists with same path, name and type. Defaults to `false`.                                                                                                         |
+| filenameOverride | bool                       | no       | If set to `true` will add unique characters to name if asset with given name already exists. If overwrite flag is set to `true`, preference will be given to overwrite flag. If both are set to `false` an error will be raised. |
+| expiry           | int                        | no       | Expiry time in seconds for the signed URL. Defaults to 3000 seconds.                                                                                                                                                             |
+
+#### SignedUploadV2Response
+
+| Properties   | Type           | Nullable | Description                                 |
+| ------------ | -------------- | -------- | ------------------------------------------- |
+| presignedUrl | PresignedUrlV2 | yes      | Presigned URL for uploading asset in chunks |
+
+#### PresignedUrlV2
+
+| Properties | Type                       | Nullable | Description                                 |
+| ---------- | -------------------------- | -------- | ------------------------------------------- |
+| url        | string                     | no       | Presigned URL for uploading asset in chunks |
+| fields     | Dictionary<string, object> | no       | signed fields to be sent along with request |
 
 ### Enums
 
