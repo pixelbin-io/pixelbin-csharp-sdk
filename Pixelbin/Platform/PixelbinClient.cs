@@ -16,7 +16,8 @@ namespace Pixelbin.Platform
         public PixelbinConfig config;
         public Assets assets { get; set; }
         public Organization organization { get; set; }
-        
+        public Uploader uploader;
+
         /// <summary>
         /// create instance of PixelbinClient
         /// </summary>
@@ -26,6 +27,7 @@ namespace Pixelbin.Platform
             this.config = config;
             assets = new Assets(config);
             organization = new Organization(config);
+            uploader = new Uploader(assets);
         }
     }
 

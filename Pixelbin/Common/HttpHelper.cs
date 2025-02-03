@@ -114,16 +114,61 @@ namespace Pixelbin.Common
                 {
                     var content = new MultipartFormDataContent();
 
-                    FileStream file = (FileStream)data.GetType().GetProperty("file").GetValue(data);
-                    string fileName = data.GetType().GetProperty("name") != null ? Convert.ToString(data.GetType().GetProperty("name").GetValue(data)) : "file";
-                    string filePath = file.Name;
-                    content.Add(new StreamContent(file), "file", file.Name);
+                    if (data is MultipartFormDataContent)
+                    {
+                        foreach (var dataContent in data as MultipartFormDataContent)
+                        {
+                            var name = dataContent.Headers.ContentDisposition.Name;
+                            if (dataContent is ByteArrayContent)
+                            {
+                                var value = dataContent.ReadAsByteArrayAsync().Result;
+                                if (name == "file")
+                                {
+                                    if (dataContent is ByteArrayContent)
+                                    {
+                                        content.Add(new ByteArrayContent(value), "file", name);
+                                    }
+                                }
+                            } else if (dataContent is StreamContent)
+                            {
+                                var value = dataContent.ReadAsStreamAsync().Result;
+                                if (name == "file")
+                                {
+                                    if (dataContent is ByteArrayContent)
+                                    {
+                                        content.Add(new StreamContent(value), "file", name);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        FileStream file = (FileStream)data.GetType().GetProperty("file").GetValue(data);
+                        string fileName = data.GetType().GetProperty("name") != null ? Convert.ToString(data.GetType().GetProperty("name").GetValue(data)) : "file";
+                        string filePath = file.Name;
+                        content.Add(new StreamContent(file), "file", file.Name);
+                    }
 
-                    var data_without_file = data.GetType().GetProperties()
-                        .Where(x => x.Name != "file")
-                        .ToDictionary(x => x.Name, x => x.GetValue(data));
+                    var data_without_file = new Dictionary<string, object>();
 
-                    foreach(var prop in data_without_file)
+                    if (data is MultipartFormDataContent)
+                    {
+                        foreach (var dataContent in data as MultipartFormDataContent)
+                        {
+                            if (dataContent.Headers.ContentDisposition.Name != "file")
+                            {
+                                data_without_file.Add(dataContent.Headers.ContentDisposition.Name, dataContent.ReadAsStringAsync().Result);
+                            }
+                        }
+                    } else
+                    {
+                        data_without_file = data.GetType().GetProperties()
+                            .Where(x => x.Name != "file")
+                            .ToDictionary(x => x.Name, x => x.GetValue(data));
+                    }
+
+                    foreach (var prop in data_without_file)
                     {
                         if (prop.Key == "name")
                             continue;
@@ -135,7 +180,7 @@ namespace Pixelbin.Common
                         {
                             content.Add(new StringContent(boolVal.ToString().ToLower()), prop.Key);
                         }
-                        else if (prop.Value is  IEnumerable<string> list)
+                        else if (prop.Value is IEnumerable<string> list)
                         {
                             foreach (var ele in list)
                             {
@@ -148,6 +193,7 @@ namespace Pixelbin.Common
                             content.Add(new StringContent(contentStr, Encoding.UTF8, "application/json"), prop.Key);
                         }
                     }
+
                     request.Content = content;
                 }
             }
@@ -165,8 +211,6 @@ namespace Pixelbin.Common
             };
             try
             {
-                Console.WriteLine("~~~~~~~REQUEST~~~~~~~");
-                Console.WriteLine(request);
                 var response = await client.SendAsync(request);
                 responseDict["status_code"] = (int)response.StatusCode;
                 responseDict["headers"] = response.Headers.ToDictionary(h => h.Key, h => h.Value.First());
@@ -187,8 +231,6 @@ namespace Pixelbin.Common
                 responseDict["text"] = e.Message;
             }
             responseDict["latency"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds() - startTime;
-            Console.WriteLine("~~~~~~~RESPONSE~~~~~~~");
-            Console.WriteLine(responseDict["text"]);
             return responseDict;
         }
     }
