@@ -11,7 +11,12 @@ namespace Pixelbin.Common.Exceptions
     [Obsolete("Use PDKServerResponseError instead")]
     public class PixelbinServerResponseError : Exception
     {
-        public PixelbinServerResponseError(string message = "") : base(message) { }
+        public int? StatusCode { get; }
+
+        public PixelbinServerResponseError(string message = "", int? status_code = null) : base(message)
+        {
+            StatusCode = status_code;
+        }
     }
 
     [Obsolete("Use PDKInvalidUrlError instead")]

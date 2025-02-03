@@ -26,7 +26,7 @@ namespace Pixelbin.Platform
         /// <param name="body">body content for url</param>
         /// <param name="contentType">content type for request header</param>
         /// <returns></returns>
-        public static async Task<Dictionary<string,object>> Execute<T>(PixelbinConfig conf, string method, string url, Dictionary<string, object>? query, T? body, string? contentType) where T : class, new()
+        public static async Task<Dictionary<string, object>> Execute<T>(PixelbinConfig conf, string method, string url, Dictionary<string, object>? query, T? body, string? contentType) where T : class, new()
         {
             string token = Convert.ToBase64String(Encoding.UTF8.GetBytes(conf.GetAccessToken()));
             Dictionary<string, string> headers = new Dictionary<string, string>()
@@ -61,20 +61,24 @@ namespace Pixelbin.Platform
                 query = get_params;
             }
 
-            string query_string = CreateQueryString(query);
+            //
+            // Skipping signature check for URLS starting with `/service/platform/` i.e. platform APIs of all services.
+            //
+            // string query_string = CreateQueryString(query);
+            // Dictionary<string, string> headers_with_sign = (Dictionary<string, string>)AddSignatureToHeaders(
+            //     domain: conf.Domain,
+            //     method: method,
+            //     url: url,
+            //     query_string: query_string,
+            //     headers: headers,
+            //     body: data,
+            //     exclude_headers: new List<string>() { "Authorization", "Content-Type" }
+            // );
+            // headers_with_sign["x-ebg-param"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(headers_with_sign["x-ebg-param"]));
 
-            Dictionary<string, string> headers_with_sign = (Dictionary<string, string>)AddSignatureToHeaders(
-                domain: conf.Domain,
-                method: method,
-                url: url,
-                query_string: query_string,
-                headers: headers,
-                body: data,
-                exclude_headers: new List<string>() { "Authorization", "Content-Type" }
-            );
-
-            headers_with_sign["x-ebg-param"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(headers_with_sign["x-ebg-param"]));
-            return await HttpHelper.Request(method: method, url: $"{conf.Domain}{url}", queryParams: query, data: body, headers: headers_with_sign);
+            string host = conf.Domain.Replace("http://", "").Replace("https://", "");
+            headers.Add("host", host);
+            return await HttpHelper.Request(method: method, url: $"{conf.Domain}{url}", queryParams: query, data: body, headers: headers);
         }
     }
 }
