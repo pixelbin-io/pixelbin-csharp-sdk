@@ -12,8 +12,8 @@ namespace Pixelbin.Platform.Models
     public class ListFilesResponse
     {
         
-        public List<ExploreItem> items { get; set; }
-        public Page page { get; set; }
+        public List<ExploreItem>? items { get; set; }
+        public Page? page { get; set; }
 
         public override string ToString() {
             return JsonConvert.SerializeObject(this);

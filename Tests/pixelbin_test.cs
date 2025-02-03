@@ -594,5 +594,180 @@ namespace PixelbinTest
 
             mockHttp.VerifyNoOutstandingExpectation();
         }
+
+        [Test]
+        [Order(34)]
+        [Category("URL-UrlObj convertion")]
+        public void Test_UrlToObj()
+        {
+            foreach (var url_case in this.urls_to_obj)
+            {
+                var input_url = (string)url_case["url"];
+                UrlObj expected_obj = (UrlObj)url_case["obj"];
+                var generated_obj = UrlToObj(input_url);
+
+                Assert.That(generated_obj.ToString(), Is.EqualTo(expected_obj.ToString()));
+            }
+        }
+
+        [Test]
+        [Order(35)]
+        [Category("URL-UrlObj convertion")]
+        public void Test_ObjToUrl()
+        {
+            foreach (var obj_case in this.obj_to_urls)
+            {
+                var input_obj = (UrlObj)obj_case["obj"];
+                var expected_url = obj_case["url"].ToString();
+                try
+                {
+                    var generated_url = ObjToUrl(input_obj);
+                    Assert.That(generated_url, Is.EqualTo(expected_url));
+                }
+                catch (Exception err)
+                {
+                    Console.WriteLine(err.Message);
+                    Assert.That(err.Message, Is.EqualTo((string)obj_case["error"]));
+                }
+            }
+        }
+
+        [Test]
+        [Order(36)]
+        [Category("URL-UrlObj convertion")]
+        public void Test_FailureForOptionDprQueryParams()
+        {
+            UrlObj obj = new UrlObj(
+                baseUrl: "https://cdn.pixelbin.io",
+                filePath: "__playground/playground-default.jpeg",
+                version: "v2",
+                zone: "z-slug",
+                cloudName: "red-scene-95b6ea",
+                options: new UrlObjOptions(
+                    dpr: 5.5,
+                    f_auto: true
+                    ),
+                transformations: new List<UrlTransformation>()
+                );
+            Assert.Throws<PixelbinIllegalQueryParameterError>(() => ObjToUrl(obj));
+        }
+
+        [Test]
+        [Order(37)]
+        [Category("URL-UrlObj convertion")]
+        public void Test_FailureForOptionFAutoQueryParam()
+        {
+            UrlObj obj = new UrlObj(
+                baseUrl: "https://cdn.pixelbin.io",
+                filePath: "__playground/playground-default.jpeg",
+                version: "v2",
+                zone: "z-slug",
+                cloudName: "red-scene-95b6ea",
+                options: new UrlObjOptions(
+                    dpr: 2.5,
+                    f_auto: "abc"
+                    ),
+                transformations: new List<UrlTransformation>()
+                );
+            Assert.Throws<PixelbinIllegalQueryParameterError>(() => ObjToUrl(obj));
+        }
+
+        [Test]
+        [Order(38)]
+        [Category("URL Signing")]
+        public void Test_SignUrl()
+        {
+            string signedURL = Security.SignURL(
+                "https://cdn.pixelbin.io/v2/dummy-cloudname/original/__playground/playground-default.jpeg",
+                20,
+                "459337ed-f378-4ddf-bad7-d7a4555c4572",
+                "dummy-token"
+            );
+
+            Uri signedUrlObj = new Uri(signedURL);
+            NameValueCollection searchParams = HttpUtility.ParseQueryString(signedUrlObj.Query);
+
+            string[] keys = new string[] { "pbs", "pbe", "pbt" };
+
+            foreach (string key in keys)
+            {
+                Assert.That(searchParams.AllKeys.Contains(key), Is.True);
+                Assert.That(searchParams.Get(key), Is.Not.Null);
+            }
+        }
+
+        [Test]
+        [Order(39)]
+        [Category("URL Signing")]
+        public void Test_SignUrlWithQuery()
+        {
+            string signedURL = Security.SignURL(
+                "https://cdn.pixelbin.io/v2/dummy-cloudname/original/__playground/playground-default.jpeg?testquery1=testval&testquery2=testval",
+                20,
+                "459337ed-f378-4ddf-bad7-d7a4555c4572",
+                "dummy-token"
+            );
+
+            Uri signedUrlObj = new Uri(signedURL);
+            NameValueCollection searchParams = HttpUtility.ParseQueryString(signedUrlObj.Query);
+
+            string[] keys = new string[] { "pbs", "pbe", "pbt", "testquery1", "testquery2" };
+
+            foreach (string key in keys)
+            {
+                Assert.That(searchParams.AllKeys.Contains(key), Is.True);
+                Assert.That(searchParams.Get(key), Is.Not.Null);
+                if (key.Contains("testquery"))
+                    Assert.That(searchParams.Get(key), Is.EqualTo("testval"));
+            }
+        }
+
+        [Test]
+        [Order(40)]
+        [Category("URL Signing")]
+        public void Test_SignUrlCustomDomain()
+        {
+            string signedURL = Security.SignURL(
+                "https://krit.imagebin.io/v2/original/__playground/playground-default.jpeg",
+                20,
+                "08040485-dc83-450b-9e1f-f1040044ae3f",
+                "dummy-token-2"
+            );
+
+            Uri signedUrlObj = new Uri(signedURL);
+            NameValueCollection searchParams = HttpUtility.ParseQueryString(signedUrlObj.Query);
+
+            string[] keys = new string[] { "pbs", "pbe", "pbt" };
+
+            foreach (string key in keys)
+            {
+                Assert.That(searchParams.AllKeys.Contains(key), Is.True);
+                Assert.That(searchParams.Get(key), Is.Not.Null);
+            }
+        }
+
+        [Test]
+        [Order(41)]
+        [Category("URL Signing")]
+        public void Test_FailureWhenEmptyUrlProvided()
+        {
+            Assert.Throws<PixelbinIllegalArgumentError>(() => Security.SignURL("", 20, "1", "dummy-token"));
+        }
+
+        [Test]
+        [Order(42)]
+        [Category("URL Signing")]
+        public void Test_FailureWhenEmptyAccessKeyProvided()
+        {
+            Assert.Throws<PixelbinIllegalArgumentError>(() => Security.SignURL("https://cdn.pixelbin.io/v2/dummy-cloudname/original/__playground/playground-default.jpeg", 20, "", "dummy-token"));
+        }
+
+        [Test]
+        [Order(43)]
+        [Category("URL Signing")]
+        public void Test_FailureWhenEmptyTokenProvided()
+        {
+            Assert.Throws<PixelbinIllegalArgumentError>(() => Security.SignURL("https://cdn.pixelbin.io/v2/dummy-cloudname/original/__playground/playground-default.jpeg", 20, "1", ""));
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace Pixelbin.Platform.Models
         
         public string? name { get; set; }
         public string? path { get; set; }
-        public string? access { get; set; }
+        public AccessEnum? access { get; set; }
         public bool? isActive { get; set; }
         public List<string>? tags { get; set; }
         public Dictionary<string, object>? metadata { get; set; }
