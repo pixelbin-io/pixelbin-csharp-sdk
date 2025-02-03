@@ -2,13 +2,13 @@ using System;
 
 namespace Pixelbin.Common.Exceptions
 {
-    [Obsolete("Use PDKInvalidCredentialError instead")]
+    [Obsolete("Use PDKInvalidCredentialError instead", true)]
     public class PixelbinInvalidCredentialError : Exception
     {
         public PixelbinInvalidCredentialError(string message = "Invalid Credentials") : base(message) { }
     }
 
-    [Obsolete("Use PDKServerResponseError instead")]
+    [Obsolete("Use PDKServerResponseError instead", true)]
     public class PixelbinServerResponseError : Exception
     {
         public int? StatusCode { get; }
@@ -19,19 +19,19 @@ namespace Pixelbin.Common.Exceptions
         }
     }
 
-    [Obsolete("Use PDKInvalidUrlError instead")]
+    [Obsolete("Use PDKInvalidUrlError instead", true)]
     public class PixelbinInvalidUrlError : Exception
     {
         public PixelbinInvalidUrlError(string message = "") : base(message) { }
     }
 
-    [Obsolete("Use PDKIllegalArgumentError instead")]
+    [Obsolete("Use PDKIllegalArgumentError instead", true)]
     public class PixelbinIllegalArgumentError : Exception
     {
         public PixelbinIllegalArgumentError(string message = "") : base(message) { }
     }
 
-    [Obsolete("Use PDKIllegalQueryParameterError instead")]
+    [Obsolete("Use PDKIllegalQueryParameterError instead", true)]
     public class PixelbinIllegalQueryParameterError : Exception
     {
         public PixelbinIllegalQueryParameterError(string message = "") : base(message) { }
@@ -44,7 +44,12 @@ namespace Pixelbin.Common.Exceptions
 
     public class PDKServerResponseError : Exception
     {
-        public PDKServerResponseError(string message = "") : base(message) { }
+        public int? StatusCode { get; }
+
+        public PDKServerResponseError(string message = "", int? status_code = null) : base(message)
+        {
+            StatusCode = status_code;
+        }
     }
 
     public class PDKInvalidUrlError : Exception

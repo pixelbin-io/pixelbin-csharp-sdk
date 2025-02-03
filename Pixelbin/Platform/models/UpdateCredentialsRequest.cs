@@ -12,7 +12,7 @@ namespace Pixelbin.Platform.Models
     internal class UpdateCredentialsRequest
     {
         
-        public Dictionary<string, object> credentials { get; set; }
+        public Dictionary<string, object>? credentials { get; set; }
 
         public override string ToString() {
             return JsonConvert.SerializeObject(this);

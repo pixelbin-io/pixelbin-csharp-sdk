@@ -12,7 +12,7 @@ namespace Pixelbin.Platform.Models
     public class SignedUploadV2Response
     {
         
-        public PresignedUrlV2 presignedUrl { get; set; }
+        public PresignedUrlV2? presignedUrl { get; set; }
 
         public override string ToString() {
             return JsonConvert.SerializeObject(this);

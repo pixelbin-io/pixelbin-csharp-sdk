@@ -12,8 +12,8 @@ namespace Pixelbin.Platform.Models
     internal class AddCredentialsRequest
     {
         
-        public Dictionary<string, object> credentials { get; set; }
-        public string pluginId { get; set; }
+        public Dictionary<string, object>? credentials { get; set; }
+        public string? pluginId { get; set; }
 
         public override string ToString() {
             return JsonConvert.SerializeObject(this);

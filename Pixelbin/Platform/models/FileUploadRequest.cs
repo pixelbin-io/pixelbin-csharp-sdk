@@ -12,7 +12,7 @@ namespace Pixelbin.Platform.Models
     internal class FileUploadRequest
     {
         [JsonIgnore]
-        public FileStream file { get; set; }
+        public FileStream? file { get; set; }
         public string? path { get; set; }
         public string? name { get; set; }
         public AccessEnum? access { get; set; }

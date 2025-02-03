@@ -10,7 +10,7 @@ using System.Web;
 namespace PixelbinTest
 {
     [TestFixture]
-    public class TestUrlUtils
+    public class UrlUtilsTests
     {
         [Test]
         [Category("URL-UrlObj convertion")]
@@ -2369,7 +2369,7 @@ namespace PixelbinTest
         [TestCase(TestName = "sign url failure when empty url provided")]
         public void Test_45()
         {
-            Assert.Throws<PixelbinIllegalArgumentError>(() => Security.SignURL("", 20, "1", "dummy-token"));
+            Assert.Throws<PDKIllegalArgumentError>(() => Security.SignURL("", 20, "1", "dummy-token"));
         }
 
         [Test]
@@ -2377,7 +2377,7 @@ namespace PixelbinTest
         [TestCase(TestName = "sign url failure when empty access key provided")]
         public void Test_46()
         {
-            Assert.Throws<PixelbinIllegalArgumentError>(() => Security.SignURL("https://cdn.pixelbin.io/v2/dummy-cloudname/original/__playground/playground-default.jpeg", 20, "", "dummy-token"));
+            Assert.Throws<PDKIllegalArgumentError>(() => Security.SignURL("https://cdn.pixelbin.io/v2/dummy-cloudname/original/__playground/playground-default.jpeg", 20, "", "dummy-token"));
         }
 
         [Test]
@@ -2385,7 +2385,7 @@ namespace PixelbinTest
         [TestCase(TestName = "sign url failure when empty token provided")]
         public void Test_47()
         {
-            Assert.Throws<PixelbinIllegalArgumentError>(() => Security.SignURL("https://cdn.pixelbin.io/v2/dummy-cloudname/original/__playground/playground-default.jpeg", 20, "1", ""));
+            Assert.Throws<PDKIllegalArgumentError>(() => Security.SignURL("https://cdn.pixelbin.io/v2/dummy-cloudname/original/__playground/playground-default.jpeg", 20, "1", ""));
         }
     };
 }

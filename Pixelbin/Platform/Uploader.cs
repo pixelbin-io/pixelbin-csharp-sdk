@@ -49,23 +49,23 @@ namespace Pixelbin.Platform
                 overwrite,
                 filenameOverride,
                 expiry
-            ) ?? throw new PixelbinServerResponseError("Error generating signed url");
+            ) ?? throw new PDKServerResponseError("Error generating signed url");
 
-            return await MultipartUploadToPixelbin(presignedUrl.presignedUrl.url ?? "", presignedUrl.presignedUrl.fields ?? new Dictionary<string, object>(), file, uploadOptions);
+            return await MultipartUploadToPixelbin(presignedUrl.presignedUrl?.url ?? "", presignedUrl.presignedUrl?.fields ?? new Dictionary<string, object>(), file, uploadOptions);
         }
 
         private async Task<object> MultipartUploadToPixelbin(string url, Dictionary<string, object> fields, object file, UploadOptions options)
         {
             var rc = new RequestContext
-            {
-                Url = url,
-                Fields = fields,
-                ChunkSize = options.ChunkSize.Value,
-                MaxRetries = options.MaxRetries.Value,
-                Concurrency = options.Concurrency.Value,
-                ExponentialFactor = options.ExponentialFactor.Value,
-                PartNumber = 0
-            };
+            (
+                url,
+                fields,
+                options.ChunkSize ?? 10 * 1024 * 1024,
+                options.MaxRetries ?? 2,
+                options.Concurrency ?? 3,
+                options.ExponentialFactor ?? 2,
+                0
+            );
 
             if (file is Stream stream)
             {
@@ -117,7 +117,7 @@ namespace Pixelbin.Platform
                     var statusCode = response["status_code"] as int? ?? 500;
                     if (statusCode != 204)
                     {
-                        throw new PixelbinServerResponseError(response["error_message"].ToString(), statusCode);
+                        throw new PDKServerResponseError(response["error_message"].ToString(), statusCode);
                     }
                     return;
                 }
@@ -236,6 +236,17 @@ namespace Pixelbin.Platform
             public int Concurrency { get; set; }
             public double ExponentialFactor { get; set; }
             public int PartNumber { get; set; }
+
+            public RequestContext(string Url, Dictionary<string, object> Fields, int ChunkSize, int MaxRetries, int Concurrency, double ExponentialFactor, int PartNumber)
+            {
+                this.Url = Url;
+                this.Fields = Fields;
+                this.ChunkSize = ChunkSize;
+                this.MaxRetries = MaxRetries;
+                this.Concurrency = Concurrency;
+                this.ExponentialFactor = ExponentialFactor;
+                this.PartNumber = PartNumber;
+            }
         }
     }
 

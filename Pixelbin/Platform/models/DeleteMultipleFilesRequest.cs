@@ -12,7 +12,7 @@ namespace Pixelbin.Platform.Models
     internal class DeleteMultipleFilesRequest
     {
         
-        public List<string> ids { get; set; }
+        public List<string>? ids { get; set; }
 
         public override string ToString() {
             return JsonConvert.SerializeObject(this);

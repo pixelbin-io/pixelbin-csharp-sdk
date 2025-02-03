@@ -42,14 +42,14 @@ namespace Pixelbin.Security
         public static string GenerateSignedURL(string url, long expirySeconds, string accessKey, string token)
         {
             if (string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(accessKey) || string.IsNullOrWhiteSpace(token))
-                throw new PixelbinIllegalArgumentError("Valid url, accessKey & expirySeconds are required for generating signed URL");
+                throw new PDKIllegalArgumentError("Valid url, accessKey & expirySeconds are required for generating signed URL");
 
             Uri urlObj = new Uri(url);
             string urlPath = urlObj.PathAndQuery;
             NameValueCollection searchParams = HttpUtility.ParseQueryString(urlObj.Query);
 
             if (searchParams.Get("pbs") != null || searchParams.AllKeys.Contains("pbs"))
-                throw new PixelbinIllegalArgumentError("URL already has a signature");
+                throw new PDKIllegalArgumentError("URL already has a signature");
 
             long expiryTimestamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds() + expirySeconds;
 

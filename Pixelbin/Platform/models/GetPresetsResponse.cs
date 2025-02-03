@@ -12,8 +12,8 @@ namespace Pixelbin.Platform.Models
     public class GetPresetsResponse
     {
         
-        public List<AddPresetResponse> items { get; set; }
-        public Page page { get; set; }
+        public List<AddPresetResponse>? items { get; set; }
+        public Page? page { get; set; }
 
         public override string ToString() {
             return JsonConvert.SerializeObject(this);

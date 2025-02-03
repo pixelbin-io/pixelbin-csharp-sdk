@@ -12,7 +12,7 @@ namespace Pixelbin.Platform.Models
     internal class CreateFolderRequest
     {
         
-        public string name { get; set; }
+        public string? name { get; set; }
         public string? path { get; set; }
 
         public override string ToString() {
