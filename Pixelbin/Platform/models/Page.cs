@@ -11,14 +11,15 @@ namespace Pixelbin.Platform.Models
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Page
     {
-        
+
         public string? type { get; set; }
         public int? size { get; set; }
         public int? current { get; set; }
         public bool? hasNext { get; set; }
         public int? itemTotal { get; set; }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return JsonConvert.SerializeObject(this);
         }
     }

@@ -11,7 +11,7 @@ namespace Pixelbin.Platform.Models
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     internal class UpdateFileRequest
     {
-        
+
         public string? name { get; set; }
         public string? path { get; set; }
         public AccessEnum? access { get; set; }
@@ -19,7 +19,8 @@ namespace Pixelbin.Platform.Models
         public List<string>? tags { get; set; }
         public Dictionary<string, object>? metadata { get; set; }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return JsonConvert.SerializeObject(this);
         }
     }

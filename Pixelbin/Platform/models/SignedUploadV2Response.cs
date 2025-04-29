@@ -11,10 +11,11 @@ namespace Pixelbin.Platform.Models
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class SignedUploadV2Response
     {
-        
+
         public PresignedUrlV2? presignedUrl { get; set; }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return JsonConvert.SerializeObject(this);
         }
     }

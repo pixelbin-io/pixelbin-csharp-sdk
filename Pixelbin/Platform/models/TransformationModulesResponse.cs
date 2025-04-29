@@ -11,12 +11,13 @@ namespace Pixelbin.Platform.Models
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class TransformationModulesResponse
     {
-        
+
         public Delimiter? delimiters { get; set; }
         public Dictionary<string, object>? plugins { get; set; }
         public List<Dictionary<string, object>>? presets { get; set; }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return JsonConvert.SerializeObject(this);
         }
     }

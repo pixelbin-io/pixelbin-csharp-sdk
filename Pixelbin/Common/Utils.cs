@@ -24,7 +24,7 @@ namespace Pixelbin.Common
                     if (parameters[key] is IEnumerable<string> list)
                     {
                         list = list.OrderBy(s => s);
-                        foreach(string item in list)
+                        foreach (string item in list)
                         {
                             finalParams.Add(HttpUtility.UrlEncode(Convert.ToString(key)) + "=" + HttpUtility.UrlEncode(Convert.ToString(item)));
                         }
@@ -69,7 +69,7 @@ namespace Pixelbin.Common
             {
                 headers_str += $"{item.Key}:{item.Value}\n";
             }
-            
+
             var body_hex = BitConverter.ToString(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(""))).Replace("-", "").ToLower();
             if (body != null)
             {

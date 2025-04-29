@@ -9,12 +9,12 @@ namespace Pixelbin.Platform
         [JsonConverter(typeof(AccessEnumConverter))]
         public enum AccessEnum
         {
-            
-            PUBLIC_READ, 
-            
+
+            PUBLIC_READ,
+
             PRIVATE
         }
-        
+
         internal class AccessEnumConverter : StringEnumConverter
         {
             public override bool CanConvert(Type objectType)
@@ -42,15 +42,15 @@ namespace Pixelbin.Platform
                 {
                     switch (enumValue)
                     {
-                        
+
                         case AccessEnum.PUBLIC_READ:
                             writer.WriteValue("public-read");
                             break;
-                        
+
                         case AccessEnum.PRIVATE:
                             writer.WriteValue("private");
                             break;
-                        
+
                         default:
                             writer.WriteNull();
                             break;
@@ -62,13 +62,15 @@ namespace Pixelbin.Platform
 
     public static class AccessEnumExtensions
     {
-        public static string EnumValue(this Enums.AccessEnum e) {
-            switch (e) {
+        public static string EnumValue(this Enums.AccessEnum e)
+        {
+            switch (e)
+            {
                 case Enums.AccessEnum.PUBLIC_READ:
                     return "public-read";
                 case Enums.AccessEnum.PRIVATE:
                     return "private";
-                
+
             }
             return "unknown enum value";
         }

@@ -11,14 +11,15 @@ namespace Pixelbin.Platform.Models
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class FolderItem
     {
-        
+
         public string? _id { get; set; }
         public int? orgId { get; set; }
         public string? name { get; set; }
         public string? path { get; set; }
         public string? type { get; set; }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return JsonConvert.SerializeObject(this);
         }
     }

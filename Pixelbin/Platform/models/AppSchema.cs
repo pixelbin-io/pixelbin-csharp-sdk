@@ -11,7 +11,7 @@ namespace Pixelbin.Platform.Models
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class AppSchema
     {
-        
+
         public int? _id { get; set; }
         public int? orgId { get; set; }
         public string? name { get; set; }
@@ -21,7 +21,8 @@ namespace Pixelbin.Platform.Models
         public string? createdAt { get; set; }
         public string? updatedAt { get; set; }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return JsonConvert.SerializeObject(this);
         }
     }

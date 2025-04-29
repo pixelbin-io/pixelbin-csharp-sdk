@@ -11,11 +11,12 @@ namespace Pixelbin.Platform.Models
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class GetAncestorsResponse
     {
-        
+
         public FolderItem? folder { get; set; }
         public List<FoldersResponse>? ancestors { get; set; }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return JsonConvert.SerializeObject(this);
         }
     }

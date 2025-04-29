@@ -11,11 +11,12 @@ namespace Pixelbin.Platform.Models
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Delimiter
     {
-        
+
         public string? operationSeparator { get; set; }
         public string? parameterSeparator { get; set; }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return JsonConvert.SerializeObject(this);
         }
     }

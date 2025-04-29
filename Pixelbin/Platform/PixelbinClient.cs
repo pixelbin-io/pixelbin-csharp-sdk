@@ -34,12 +34,12 @@ namespace Pixelbin.Platform
     public class Assets
     {
         private readonly PixelbinConfig _configuration;
-    
+
         public Assets(PixelbinConfig configuration)
         {
             _configuration = configuration;
         }
-         
+
         /// <summary>
         /// Add credentials for a transformation module.
         /// </summary>
@@ -49,21 +49,21 @@ namespace Pixelbin.Platform
         /// <param name="credentials">Credentials of the plugin</param>
         /// <param name="pluginId">Unique identifier for the plugin this credential belongs to</param>
         public async Task<AddCredentialsResponse?> addCredentialsAsync(
-            Dictionary<string, object>? credentials, 
+            Dictionary<string, object>? credentials,
             string? pluginId
         )
-        { 
-    
+        {
+
             // Body
             var body = new AddCredentialsRequest();
-    
+
             body.credentials = (Dictionary<string, object>?)credentials;
             body.pluginId = (string?)pluginId;
-            
-    
+
+
             // Body Validation
             JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
-    
+
             var response = await ApiClient.Execute(
                 _configuration,
                 "post",
@@ -72,25 +72,25 @@ namespace Pixelbin.Platform
                 body,
                 "application/json"
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<AddCredentialsResponse>(response["content"].ToString());
         }
-    
+
         public AddCredentialsResponse? addCredentials(
-            Dictionary<string, object>? credentials, 
+            Dictionary<string, object>? credentials,
             string? pluginId
         )
         {
             return Task.Run(() => addCredentialsAsync(
-            credentials:credentials, 
-            pluginId:pluginId)).GetAwaiter().GetResult();
+            credentials: credentials,
+            pluginId: pluginId)).GetAwaiter().GetResult();
         }
-    
-     
+
+
         /// <summary>
         /// Update credentials of a transformation module.
         /// </summary>
@@ -103,24 +103,24 @@ namespace Pixelbin.Platform
             string? pluginId,
             Dictionary<string, object>? credentials
         )
-        { 
+        {
             // Payload
             var payload = new Dictionary<string, object>();
-    
+
             if (pluginId != null)
             {
                 payload.Add("pluginId", pluginId);
             }
-    
+
             // Body
             var body = new UpdateCredentialsRequest();
-    
+
             body.credentials = (Dictionary<string, object>?)credentials;
-            
-    
+
+
             // Body Validation
             JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
-    
+
             var response = await ApiClient.Execute(
                 _configuration,
                 "patch",
@@ -129,25 +129,25 @@ namespace Pixelbin.Platform
                 body,
                 "application/json"
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<AddCredentialsResponse>(response["content"].ToString());
         }
-    
+
         public AddCredentialsResponse? updateCredentials(
             string? pluginId,
             Dictionary<string, object>? credentials
         )
         {
             return Task.Run(() => updateCredentialsAsync(
-            pluginId:pluginId,
-            credentials:credentials)).GetAwaiter().GetResult();
+            pluginId: pluginId,
+            credentials: credentials)).GetAwaiter().GetResult();
         }
-    
-    
+
+
         /// <summary>
         /// Delete credentials of a transformation module.
         /// </summary>
@@ -158,15 +158,15 @@ namespace Pixelbin.Platform
         public async Task<AddCredentialsResponse?> deleteCredentialsAsync(
             string? pluginId
         )
-        { 
+        {
             // Payload
             var payload = new Dictionary<string, object>();
-    
+
             if (pluginId != null)
             {
                 payload.Add("pluginId", pluginId);
             }
-    
+
             var response = await ApiClient.Execute<object>(
                 _configuration,
                 "delete",
@@ -175,23 +175,23 @@ namespace Pixelbin.Platform
                 null,
                 ""
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<AddCredentialsResponse>(response["content"].ToString());
         }
-    
+
         public AddCredentialsResponse? deleteCredentials(
             string? pluginId
         )
         {
             return Task.Run(() => deleteCredentialsAsync(
-            pluginId:pluginId)).GetAwaiter().GetResult();
+            pluginId: pluginId)).GetAwaiter().GetResult();
         }
-    
-    
+
+
         /// <summary>
         /// Get file details with _id
         /// </summary>
@@ -199,15 +199,15 @@ namespace Pixelbin.Platform
         public async Task<FilesResponse?> getFileByIdAsync(
             string? _id
         )
-        { 
+        {
             // Payload
             var payload = new Dictionary<string, object>();
-    
+
             if (_id != null)
             {
                 payload.Add("_id", _id);
             }
-    
+
             var response = await ApiClient.Execute<object>(
                 _configuration,
                 "get",
@@ -216,23 +216,23 @@ namespace Pixelbin.Platform
                 null,
                 ""
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<FilesResponse>(response["content"].ToString());
         }
-    
+
         public FilesResponse? getFileById(
             string? _id
         )
         {
             return Task.Run(() => getFileByIdAsync(
-            _id:_id)).GetAwaiter().GetResult();
+            _id: _id)).GetAwaiter().GetResult();
         }
-    
-    
+
+
         /// <summary>
         /// Get file details with fileId
         /// </summary>
@@ -240,15 +240,15 @@ namespace Pixelbin.Platform
         public async Task<FilesResponse?> getFileByFileIdAsync(
             string? fileId
         )
-        { 
+        {
             // Payload
             var payload = new Dictionary<string, object>();
-    
+
             if (fileId != null)
             {
                 payload.Add("fileId", fileId);
             }
-    
+
             var response = await ApiClient.Execute<object>(
                 _configuration,
                 "get",
@@ -257,23 +257,23 @@ namespace Pixelbin.Platform
                 null,
                 ""
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<FilesResponse>(response["content"].ToString());
         }
-    
+
         public FilesResponse? getFileByFileId(
             string? fileId
         )
         {
             return Task.Run(() => getFileByFileIdAsync(
-            fileId:fileId)).GetAwaiter().GetResult();
+            fileId: fileId)).GetAwaiter().GetResult();
         }
-    
-     
+
+
         /// <summary>
         /// Update file details
         /// </summary>
@@ -286,54 +286,59 @@ namespace Pixelbin.Platform
         /// <param name="metadata">Metadata associated with the file</param>
         public async Task<FilesResponse?> updateFileAsync(
             string? fileId,
-            string? name = null, 
-            string? path = null, 
-            AccessEnum? access = null, 
-            bool? isActive = null, 
-            List<string>? tags = null, 
+            string? name = null,
+            string? path = null,
+            AccessEnum? access = null,
+            bool? isActive = null,
+            List<string>? tags = null,
             Dictionary<string, object>? metadata = null
         )
-        { 
+        {
             // Payload
             var payload = new Dictionary<string, object>();
-    
+
             if (fileId != null)
             {
                 payload.Add("fileId", fileId);
             }
-    
+
             // Body
             var body = new UpdateFileRequest();
-    
+
             if (name != null)
-            { 
+            {
                 body.name = (string?)name;
-            
-            }if (path != null)
-            { 
-                body.path = (string?)path;
-            
-            }if (access != null)
-            { 
-                body.access = (AccessEnum?)access;
-            
-            }if (isActive != null)
-            { 
-                body.isActive = (bool?)isActive;
-            
-            }if (tags != null)
-            { 
-                body.tags = (List<string>?)tags;
-            
-            }if (metadata != null)
-            { 
-                body.metadata = (Dictionary<string, object>?)metadata;
-            
+
             }
-    
+            if (path != null)
+            {
+                body.path = (string?)path;
+
+            }
+            if (access != null)
+            {
+                body.access = (AccessEnum?)access;
+
+            }
+            if (isActive != null)
+            {
+                body.isActive = (bool?)isActive;
+
+            }
+            if (tags != null)
+            {
+                body.tags = (List<string>?)tags;
+
+            }
+            if (metadata != null)
+            {
+                body.metadata = (Dictionary<string, object>?)metadata;
+
+            }
+
             // Body Validation
             JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
-    
+
             var response = await ApiClient.Execute(
                 _configuration,
                 "patch",
@@ -342,35 +347,35 @@ namespace Pixelbin.Platform
                 body,
                 "application/json"
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<FilesResponse>(response["content"].ToString());
         }
-    
+
         public FilesResponse? updateFile(
             string? fileId,
-            string? name = null, 
-            string? path = null, 
-            AccessEnum? access = null, 
-            bool? isActive = null, 
-            List<string>? tags = null, 
+            string? name = null,
+            string? path = null,
+            AccessEnum? access = null,
+            bool? isActive = null,
+            List<string>? tags = null,
             Dictionary<string, object>? metadata = null
         )
         {
             return Task.Run(() => updateFileAsync(
-            fileId:fileId,
-            name:name, 
-            path:path, 
-            access:access, 
-            isActive:isActive, 
-            tags:tags, 
-            metadata:metadata)).GetAwaiter().GetResult();
+            fileId: fileId,
+            name: name,
+            path: path,
+            access: access,
+            isActive: isActive,
+            tags: tags,
+            metadata: metadata)).GetAwaiter().GetResult();
         }
-    
-    
+
+
         /// <summary>
         /// Delete file
         /// </summary>
@@ -378,15 +383,15 @@ namespace Pixelbin.Platform
         public async Task<FilesResponse?> deleteFileAsync(
             string? fileId
         )
-        { 
+        {
             // Payload
             var payload = new Dictionary<string, object>();
-    
+
             if (fileId != null)
             {
                 payload.Add("fileId", fileId);
             }
-    
+
             var response = await ApiClient.Execute<object>(
                 _configuration,
                 "delete",
@@ -395,23 +400,23 @@ namespace Pixelbin.Platform
                 null,
                 ""
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<FilesResponse>(response["content"].ToString());
         }
-    
+
         public FilesResponse? deleteFile(
             string? fileId
         )
         {
             return Task.Run(() => deleteFileAsync(
-            fileId:fileId)).GetAwaiter().GetResult();
+            fileId: fileId)).GetAwaiter().GetResult();
         }
-    
-     
+
+
         /// <summary>
         /// Delete multiple files
         /// </summary>
@@ -419,17 +424,17 @@ namespace Pixelbin.Platform
         public async Task<List<FilesResponse>?> deleteFilesAsync(
             List<string>? ids
         )
-        { 
-    
+        {
+
             // Body
             var body = new DeleteMultipleFilesRequest();
-    
+
             body.ids = (List<string>?)ids;
-            
-    
+
+
             // Body Validation
             JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
-    
+
             var response = await ApiClient.Execute(
                 _configuration,
                 "post",
@@ -438,23 +443,23 @@ namespace Pixelbin.Platform
                 body,
                 "application/json"
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<List<FilesResponse>>(response["content"].ToString());
         }
-    
+
         public List<FilesResponse>? deleteFiles(
             List<string>? ids
         )
         {
             return Task.Run(() => deleteFilesAsync(
-            ids:ids)).GetAwaiter().GetResult();
+            ids: ids)).GetAwaiter().GetResult();
         }
-    
-     
+
+
         /// <summary>
         /// Create folder
         /// </summary>
@@ -464,26 +469,26 @@ namespace Pixelbin.Platform
         /// <param name="name">Name of the folder</param>
         /// <param name="path">Path of the folder</param>
         public async Task<FoldersResponse?> createFolderAsync(
-            string? name, 
+            string? name,
             string? path = null
         )
-        { 
-    
+        {
+
             // Body
             var body = new CreateFolderRequest();
-    
+
             body.name = (string?)name;
-            
-    
+
+
             if (path != null)
-            { 
+            {
                 body.path = (string?)path;
-            
+
             }
-    
+
             // Body Validation
             JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
-    
+
             var response = await ApiClient.Execute(
                 _configuration,
                 "post",
@@ -492,25 +497,25 @@ namespace Pixelbin.Platform
                 body,
                 "application/json"
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<FoldersResponse>(response["content"].ToString());
         }
-    
+
         public FoldersResponse? createFolder(
-            string? name, 
+            string? name,
             string? path = null
         )
         {
             return Task.Run(() => createFolderAsync(
-            name:name, 
-            path:path)).GetAwaiter().GetResult();
+            name: name,
+            path: path)).GetAwaiter().GetResult();
         }
-    
-    
+
+
         /// <summary>
         /// Get folder details
         /// </summary>
@@ -523,33 +528,33 @@ namespace Pixelbin.Platform
             string? path = null,
             string? name = null
         )
-        { 
+        {
             // Payload
             var payload = new Dictionary<string, object>();
-    
+
             if (path != null)
             {
                 payload.Add("path", path);
             }
-    
+
             if (name != null)
             {
                 payload.Add("name", name);
             }
-    
+
             // Params
             var query_params = new Dictionary<string, object>();
-            
+
             if (path != null)
             {
                 query_params.Add("path", path);
             }
-            
+
             if (name != null)
             {
                 query_params.Add("name", name);
             }
-    
+
             var response = await ApiClient.Execute<object>(
                 _configuration,
                 "get",
@@ -558,25 +563,25 @@ namespace Pixelbin.Platform
                 null,
                 ""
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<ExploreItem>(response["content"].ToString());
         }
-    
+
         public ExploreItem? getFolderDetails(
             string? path = null,
             string? name = null
         )
         {
             return Task.Run(() => getFolderDetailsAsync(
-            path:path, 
-            name:name)).GetAwaiter().GetResult();
+            path: path,
+            name: name)).GetAwaiter().GetResult();
         }
-    
-     
+
+
         /// <summary>
         /// Update folder details
         /// </summary>
@@ -589,27 +594,27 @@ namespace Pixelbin.Platform
             string? folderId,
             bool? isActive = null
         )
-        { 
+        {
             // Payload
             var payload = new Dictionary<string, object>();
-    
+
             if (folderId != null)
             {
                 payload.Add("folderId", folderId);
             }
-    
+
             // Body
             var body = new UpdateFolderRequest();
-    
+
             if (isActive != null)
-            { 
+            {
                 body.isActive = (bool?)isActive;
-            
+
             }
-    
+
             // Body Validation
             JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
-    
+
             var response = await ApiClient.Execute(
                 _configuration,
                 "patch",
@@ -618,25 +623,25 @@ namespace Pixelbin.Platform
                 body,
                 "application/json"
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<FoldersResponse>(response["content"].ToString());
         }
-    
+
         public FoldersResponse? updateFolder(
             string? folderId,
             bool? isActive = null
         )
         {
             return Task.Run(() => updateFolderAsync(
-            folderId:folderId,
-            isActive:isActive)).GetAwaiter().GetResult();
+            folderId: folderId,
+            isActive: isActive)).GetAwaiter().GetResult();
         }
-    
-    
+
+
         /// <summary>
         /// Delete folder
         /// </summary>
@@ -647,15 +652,15 @@ namespace Pixelbin.Platform
         public async Task<FoldersResponse?> deleteFolderAsync(
             string? _id
         )
-        { 
+        {
             // Payload
             var payload = new Dictionary<string, object>();
-    
+
             if (_id != null)
             {
                 payload.Add("_id", _id);
             }
-    
+
             var response = await ApiClient.Execute<object>(
                 _configuration,
                 "delete",
@@ -664,23 +669,23 @@ namespace Pixelbin.Platform
                 null,
                 ""
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<FoldersResponse>(response["content"].ToString());
         }
-    
+
         public FoldersResponse? deleteFolder(
             string? _id
         )
         {
             return Task.Run(() => deleteFolderAsync(
-            _id:_id)).GetAwaiter().GetResult();
+            _id: _id)).GetAwaiter().GetResult();
         }
-    
-    
+
+
         /// <summary>
         /// Get all ancestors of a folder
         /// </summary>
@@ -691,15 +696,15 @@ namespace Pixelbin.Platform
         public async Task<GetAncestorsResponse?> getFolderAncestorsAsync(
             string? _id
         )
-        { 
+        {
             // Payload
             var payload = new Dictionary<string, object>();
-    
+
             if (_id != null)
             {
                 payload.Add("_id", _id);
             }
-    
+
             var response = await ApiClient.Execute<object>(
                 _configuration,
                 "get",
@@ -708,23 +713,23 @@ namespace Pixelbin.Platform
                 null,
                 ""
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<GetAncestorsResponse>(response["content"].ToString());
         }
-    
+
         public GetAncestorsResponse? getFolderAncestors(
             string? _id
         )
         {
             return Task.Run(() => getFolderAncestorsAsync(
-            _id:_id)).GetAwaiter().GetResult();
+            _id: _id)).GetAwaiter().GetResult();
         }
-    
-    
+
+
         /// <summary>
         /// List and search files and folders.
         /// </summary>
@@ -751,103 +756,103 @@ namespace Pixelbin.Platform
             int? pageSize = null,
             string? sort = null
         )
-        { 
+        {
             // Payload
             var payload = new Dictionary<string, object>();
-    
+
             if (name != null)
             {
                 payload.Add("name", name);
             }
-    
+
             if (path != null)
             {
                 payload.Add("path", path);
             }
-    
+
             if (format != null)
             {
                 payload.Add("format", format);
             }
-    
+
             if (tags != null)
             {
                 payload.Add("tags", tags);
             }
-    
+
             if (onlyFiles != null)
             {
                 payload.Add("onlyFiles", onlyFiles);
             }
-    
+
             if (onlyFolders != null)
             {
                 payload.Add("onlyFolders", onlyFolders);
             }
-    
+
             if (pageNo != null)
             {
                 payload.Add("pageNo", pageNo);
             }
-    
+
             if (pageSize != null)
             {
                 payload.Add("pageSize", pageSize);
             }
-    
+
             if (sort != null)
             {
                 payload.Add("sort", sort);
             }
-    
+
             // Params
             var query_params = new Dictionary<string, object>();
-            
+
             if (name != null)
             {
                 query_params.Add("name", name);
             }
-            
+
             if (path != null)
             {
                 query_params.Add("path", path);
             }
-            
+
             if (format != null)
             {
                 query_params.Add("format", format);
             }
-            
+
             if (tags != null)
             {
                 query_params.Add("tags", tags);
             }
-            
+
             if (onlyFiles != null)
             {
                 query_params.Add("onlyFiles", onlyFiles);
             }
-            
+
             if (onlyFolders != null)
             {
                 query_params.Add("onlyFolders", onlyFolders);
             }
-            
+
             if (pageNo != null)
             {
                 query_params.Add("pageNo", pageNo);
             }
-            
+
             if (pageSize != null)
             {
                 query_params.Add("pageSize", pageSize);
             }
-            
+
             if (sort != null)
             {
                 query_params.Add("sort", sort);
             }
-    
+
             var response = await ApiClient.Execute<object>(
                 _configuration,
                 "get",
@@ -856,14 +861,14 @@ namespace Pixelbin.Platform
                 null,
                 ""
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<ListFilesResponse>(response["content"].ToString());
         }
-    
+
         public ListFilesResponse? listFiles(
             string? name = null,
             string? path = null,
@@ -877,18 +882,18 @@ namespace Pixelbin.Platform
         )
         {
             return Task.Run(() => listFilesAsync(
-            name:name, 
-            path:path, 
-            format:format, 
-            tags:tags, 
-            onlyFiles:onlyFiles, 
-            onlyFolders:onlyFolders, 
-            pageNo:pageNo, 
-            pageSize:pageSize, 
-            sort:sort)).GetAwaiter().GetResult();
+            name: name,
+            path: path,
+            format: format,
+            tags: tags,
+            onlyFiles: onlyFiles,
+            onlyFolders: onlyFolders,
+            pageNo: pageNo,
+            pageSize: pageSize,
+            sort: sort)).GetAwaiter().GetResult();
         }
-    
-    
+
+
         /// <summary>
         /// Get default asset for playground
         /// </summary>
@@ -896,8 +901,8 @@ namespace Pixelbin.Platform
         /// Get default asset for playground
         /// </remarks>
         public async Task<UploadResponse?> getDefaultAssetForPlaygroundAsync()
-        { 
-    
+        {
+
             var response = await ApiClient.Execute<object>(
                 _configuration,
                 "get",
@@ -906,20 +911,20 @@ namespace Pixelbin.Platform
                 null,
                 ""
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<UploadResponse>(response["content"].ToString());
         }
-    
+
         public UploadResponse? getDefaultAssetForPlayground()
         {
             return Task.Run(() => getDefaultAssetForPlaygroundAsync()).GetAwaiter().GetResult();
         }
-    
-    
+
+
         /// <summary>
         /// Get all transformation modules
         /// </summary>
@@ -927,8 +932,8 @@ namespace Pixelbin.Platform
         /// Get all transformation modules. 
         /// </remarks>
         public async Task<TransformationModulesResponse?> getModulesAsync()
-        { 
-    
+        {
+
             var response = await ApiClient.Execute<object>(
                 _configuration,
                 "get",
@@ -937,20 +942,20 @@ namespace Pixelbin.Platform
                 null,
                 ""
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<TransformationModulesResponse>(response["content"].ToString());
         }
-    
+
         public TransformationModulesResponse? getModules()
         {
             return Task.Run(() => getModulesAsync()).GetAwaiter().GetResult();
         }
-    
-    
+
+
         /// <summary>
         /// Get Transformation Module by module identifier
         /// </summary>
@@ -961,15 +966,15 @@ namespace Pixelbin.Platform
         public async Task<TransformationModuleResponse?> getModuleAsync(
             string? identifier
         )
-        { 
+        {
             // Payload
             var payload = new Dictionary<string, object>();
-    
+
             if (identifier != null)
             {
                 payload.Add("identifier", identifier);
             }
-    
+
             var response = await ApiClient.Execute<object>(
                 _configuration,
                 "get",
@@ -978,23 +983,23 @@ namespace Pixelbin.Platform
                 null,
                 ""
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<TransformationModuleResponse>(response["content"].ToString());
         }
-    
+
         public TransformationModuleResponse? getModule(
             string? identifier
         )
         {
             return Task.Run(() => getModuleAsync(
-            identifier:identifier)).GetAwaiter().GetResult();
+            identifier: identifier)).GetAwaiter().GetResult();
         }
-    
-     
+
+
         /// <summary>
         /// Add a preset.
         /// </summary>
@@ -1005,28 +1010,28 @@ namespace Pixelbin.Platform
         /// <param name="transformation">A chain of transformations, separated by `~`</param>
         /// <param name="params">Parameters object for transformation variables</param>
         public async Task<AddPresetResponse?> addPresetAsync(
-            string? presetName, 
-            string? transformation, 
+            string? presetName,
+            string? transformation,
             Dictionary<string, object>? @params = null
         )
-        { 
-    
+        {
+
             // Body
             var body = new AddPresetRequest();
-    
+
             body.presetName = (string?)presetName;
             body.transformation = (string?)transformation;
-            
-    
+
+
             if (@params != null)
-            { 
+            {
                 body.@params = (Dictionary<string, object>?)@params;
-            
+
             }
-    
+
             // Body Validation
             JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
-    
+
             var response = await ApiClient.Execute(
                 _configuration,
                 "post",
@@ -1035,27 +1040,27 @@ namespace Pixelbin.Platform
                 body,
                 "application/json"
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<AddPresetResponse>(response["content"].ToString());
         }
-    
+
         public AddPresetResponse? addPreset(
-            string? presetName, 
-            string? transformation, 
+            string? presetName,
+            string? transformation,
             Dictionary<string, object>? @params = null
         )
         {
             return Task.Run(() => addPresetAsync(
-            presetName:presetName, 
-            transformation:transformation, 
-            @params:@params)).GetAwaiter().GetResult();
+            presetName: presetName,
+            transformation: transformation,
+            @params: @params)).GetAwaiter().GetResult();
         }
-    
-    
+
+
         /// <summary>
         /// Get presets for an organization
         /// </summary>
@@ -1076,73 +1081,73 @@ namespace Pixelbin.Platform
             bool? archived = null,
             List<string>? sort = null
         )
-        { 
+        {
             // Payload
             var payload = new Dictionary<string, object>();
-    
+
             if (pageNo != null)
             {
                 payload.Add("pageNo", pageNo);
             }
-    
+
             if (pageSize != null)
             {
                 payload.Add("pageSize", pageSize);
             }
-    
+
             if (name != null)
             {
                 payload.Add("name", name);
             }
-    
+
             if (transformation != null)
             {
                 payload.Add("transformation", transformation);
             }
-    
+
             if (archived != null)
             {
                 payload.Add("archived", archived);
             }
-    
+
             if (sort != null)
             {
                 payload.Add("sort", sort);
             }
-    
+
             // Params
             var query_params = new Dictionary<string, object>();
-            
+
             if (pageNo != null)
             {
                 query_params.Add("pageNo", pageNo);
             }
-            
+
             if (pageSize != null)
             {
                 query_params.Add("pageSize", pageSize);
             }
-            
+
             if (name != null)
             {
                 query_params.Add("name", name);
             }
-            
+
             if (transformation != null)
             {
                 query_params.Add("transformation", transformation);
             }
-            
+
             if (archived != null)
             {
                 query_params.Add("archived", archived);
             }
-            
+
             if (sort != null)
             {
                 query_params.Add("sort", sort);
             }
-    
+
             var response = await ApiClient.Execute<object>(
                 _configuration,
                 "get",
@@ -1151,14 +1156,14 @@ namespace Pixelbin.Platform
                 null,
                 ""
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<GetPresetsResponse>(response["content"].ToString());
         }
-    
+
         public GetPresetsResponse? getPresets(
             int? pageNo = null,
             int? pageSize = null,
@@ -1169,15 +1174,15 @@ namespace Pixelbin.Platform
         )
         {
             return Task.Run(() => getPresetsAsync(
-            pageNo:pageNo, 
-            pageSize:pageSize, 
-            name:name, 
-            transformation:transformation, 
-            archived:archived, 
-            sort:sort)).GetAwaiter().GetResult();
+            pageNo: pageNo,
+            pageSize: pageSize,
+            name: name,
+            transformation: transformation,
+            archived: archived,
+            sort: sort)).GetAwaiter().GetResult();
         }
-    
-     
+
+
         /// <summary>
         /// Update a preset.
         /// </summary>
@@ -1190,24 +1195,24 @@ namespace Pixelbin.Platform
             string? presetName,
             bool? archived
         )
-        { 
+        {
             // Payload
             var payload = new Dictionary<string, object>();
-    
+
             if (presetName != null)
             {
                 payload.Add("presetName", presetName);
             }
-    
+
             // Body
             var body = new UpdatePresetRequest();
-    
+
             body.archived = (bool?)archived;
-            
-    
+
+
             // Body Validation
             JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
-    
+
             var response = await ApiClient.Execute(
                 _configuration,
                 "patch",
@@ -1216,25 +1221,25 @@ namespace Pixelbin.Platform
                 body,
                 "application/json"
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<AddPresetResponse>(response["content"].ToString());
         }
-    
+
         public AddPresetResponse? updatePreset(
             string? presetName,
             bool? archived
         )
         {
             return Task.Run(() => updatePresetAsync(
-            presetName:presetName,
-            archived:archived)).GetAwaiter().GetResult();
+            presetName: presetName,
+            archived: archived)).GetAwaiter().GetResult();
         }
-    
-    
+
+
         /// <summary>
         /// Delete a preset.
         /// </summary>
@@ -1245,15 +1250,15 @@ namespace Pixelbin.Platform
         public async Task<AddPresetResponse?> deletePresetAsync(
             string? presetName
         )
-        { 
+        {
             // Payload
             var payload = new Dictionary<string, object>();
-    
+
             if (presetName != null)
             {
                 payload.Add("presetName", presetName);
             }
-    
+
             var response = await ApiClient.Execute<object>(
                 _configuration,
                 "delete",
@@ -1262,23 +1267,23 @@ namespace Pixelbin.Platform
                 null,
                 ""
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<AddPresetResponse>(response["content"].ToString());
         }
-    
+
         public AddPresetResponse? deletePreset(
             string? presetName
         )
         {
             return Task.Run(() => deletePresetAsync(
-            presetName:presetName)).GetAwaiter().GetResult();
+            presetName: presetName)).GetAwaiter().GetResult();
         }
-    
-    
+
+
         /// <summary>
         /// Get a preset.
         /// </summary>
@@ -1289,15 +1294,15 @@ namespace Pixelbin.Platform
         public async Task<AddPresetResponse?> getPresetAsync(
             string? presetName
         )
-        { 
+        {
             // Payload
             var payload = new Dictionary<string, object>();
-    
+
             if (presetName != null)
             {
                 payload.Add("presetName", presetName);
             }
-    
+
             var response = await ApiClient.Execute<object>(
                 _configuration,
                 "get",
@@ -1306,23 +1311,23 @@ namespace Pixelbin.Platform
                 null,
                 ""
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<AddPresetResponse>(response["content"].ToString());
         }
-    
+
         public AddPresetResponse? getPreset(
             string? presetName
         )
         {
             return Task.Run(() => getPresetAsync(
-            presetName:presetName)).GetAwaiter().GetResult();
+            presetName: presetName)).GetAwaiter().GetResult();
         }
-    
-     
+
+
         /// <summary>
         /// Upload File
         /// </summary>
@@ -1338,68 +1343,68 @@ namespace Pixelbin.Platform
         /// <param name="overwrite">Overwrite flag. If set to `true` will overwrite any file that exists with same path, name and type. Defaults to `false`.</param>
         /// <param name="filenameOverride">If set to `true` will add unique characters to name if asset with given name already exists. If overwrite flag is set to `true`, preference will be given to overwrite flag. If both are set to `false` an error will be raised.</param>
         public async Task<UploadResponse?> fileUploadAsync(
-            FileStream? file, 
-            string? path = null, 
-            string? name = null, 
-            AccessEnum? access = null, 
-            List<string>? tags = null, 
-            Dictionary<string, object>? metadata = null, 
-            bool? overwrite = null, 
+            FileStream? file,
+            string? path = null,
+            string? name = null,
+            AccessEnum? access = null,
+            List<string>? tags = null,
+            Dictionary<string, object>? metadata = null,
+            bool? overwrite = null,
             bool? filenameOverride = null
         )
-        { 
-    
+        {
+
             // Body
             var body = new FileUploadRequest();
-    
+
             body.file = (FileStream?)file;
-            
-    
+
+
             if (path != null)
-            { 
+            {
                 body.path = (string?)path;
-            
+
             }
-    
+
             if (name != null)
-            { 
+            {
                 body.name = (string?)name;
-            
+
             }
-    
+
             if (access != null)
-            { 
+            {
                 body.access = (AccessEnum?)access;
-            
+
             }
-    
+
             if (tags != null)
-            { 
+            {
                 body.tags = (List<string>?)tags;
-            
+
             }
-    
+
             if (metadata != null)
-            { 
+            {
                 body.metadata = (Dictionary<string, object>?)metadata;
-            
+
             }
-    
+
             if (overwrite != null)
-            { 
+            {
                 body.overwrite = (bool?)overwrite;
-            
+
             }
-    
+
             if (filenameOverride != null)
-            { 
+            {
                 body.filenameOverride = (bool?)filenameOverride;
-            
+
             }
-    
+
             // Body Validation
             JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
-    
+
             var response = await ApiClient.Execute(
                 _configuration,
                 "post",
@@ -1408,37 +1413,37 @@ namespace Pixelbin.Platform
                 body,
                 "multipart/form-data"
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<UploadResponse>(response["content"].ToString());
         }
-    
+
         public UploadResponse? fileUpload(
-            FileStream? file, 
-            string? path = null, 
-            string? name = null, 
-            AccessEnum? access = null, 
-            List<string>? tags = null, 
-            Dictionary<string, object>? metadata = null, 
-            bool? overwrite = null, 
+            FileStream? file,
+            string? path = null,
+            string? name = null,
+            AccessEnum? access = null,
+            List<string>? tags = null,
+            Dictionary<string, object>? metadata = null,
+            bool? overwrite = null,
             bool? filenameOverride = null
         )
         {
             return Task.Run(() => fileUploadAsync(
-            file:file, 
-            path:path, 
-            name:name, 
-            access:access, 
-            tags:tags, 
-            metadata:metadata, 
-            overwrite:overwrite, 
-            filenameOverride:filenameOverride)).GetAwaiter().GetResult();
+            file: file,
+            path: path,
+            name: name,
+            access: access,
+            tags: tags,
+            metadata: metadata,
+            overwrite: overwrite,
+            filenameOverride: filenameOverride)).GetAwaiter().GetResult();
         }
-    
-     
+
+
         /// <summary>
         /// Upload Asset with url
         /// </summary>
@@ -1454,68 +1459,68 @@ namespace Pixelbin.Platform
         /// <param name="overwrite">Overwrite flag. If set to `true` will overwrite any file that exists with same path, name and type. Defaults to `false`.</param>
         /// <param name="filenameOverride">If set to `true` will add unique characters to name if asset with given name already exists. If overwrite flag is set to `true`, preference will be given to overwrite flag. If both are set to `false` an error will be raised.</param>
         public async Task<UploadResponse?> urlUploadAsync(
-            string? url, 
-            string? path = null, 
-            string? name = null, 
-            AccessEnum? access = null, 
-            List<string>? tags = null, 
-            Dictionary<string, object>? metadata = null, 
-            bool? overwrite = null, 
+            string? url,
+            string? path = null,
+            string? name = null,
+            AccessEnum? access = null,
+            List<string>? tags = null,
+            Dictionary<string, object>? metadata = null,
+            bool? overwrite = null,
             bool? filenameOverride = null
         )
-        { 
-    
+        {
+
             // Body
             var body = new UrlUploadRequest();
-    
+
             body.url = (string?)url;
-            
-    
+
+
             if (path != null)
-            { 
+            {
                 body.path = (string?)path;
-            
+
             }
-    
+
             if (name != null)
-            { 
+            {
                 body.name = (string?)name;
-            
+
             }
-    
+
             if (access != null)
-            { 
+            {
                 body.access = (AccessEnum?)access;
-            
+
             }
-    
+
             if (tags != null)
-            { 
+            {
                 body.tags = (List<string>?)tags;
-            
+
             }
-    
+
             if (metadata != null)
-            { 
+            {
                 body.metadata = (Dictionary<string, object>?)metadata;
-            
+
             }
-    
+
             if (overwrite != null)
-            { 
+            {
                 body.overwrite = (bool?)overwrite;
-            
+
             }
-    
+
             if (filenameOverride != null)
-            { 
+            {
                 body.filenameOverride = (bool?)filenameOverride;
-            
+
             }
-    
+
             // Body Validation
             JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
-    
+
             var response = await ApiClient.Execute(
                 _configuration,
                 "post",
@@ -1524,37 +1529,37 @@ namespace Pixelbin.Platform
                 body,
                 "application/json"
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<UploadResponse>(response["content"].ToString());
         }
-    
+
         public UploadResponse? urlUpload(
-            string? url, 
-            string? path = null, 
-            string? name = null, 
-            AccessEnum? access = null, 
-            List<string>? tags = null, 
-            Dictionary<string, object>? metadata = null, 
-            bool? overwrite = null, 
+            string? url,
+            string? path = null,
+            string? name = null,
+            AccessEnum? access = null,
+            List<string>? tags = null,
+            Dictionary<string, object>? metadata = null,
+            bool? overwrite = null,
             bool? filenameOverride = null
         )
         {
             return Task.Run(() => urlUploadAsync(
-            url:url, 
-            path:path, 
-            name:name, 
-            access:access, 
-            tags:tags, 
-            metadata:metadata, 
-            overwrite:overwrite, 
-            filenameOverride:filenameOverride)).GetAwaiter().GetResult();
+            url: url,
+            path: path,
+            name: name,
+            access: access,
+            tags: tags,
+            metadata: metadata,
+            overwrite: overwrite,
+            filenameOverride: filenameOverride)).GetAwaiter().GetResult();
         }
-    
-     
+
+
         /// <summary>
         /// S3 Signed URL upload
         /// </summary>
@@ -1570,57 +1575,64 @@ namespace Pixelbin.Platform
         /// <param name="overwrite">Overwrite flag. If set to `true` will overwrite any file that exists with same path, name and type. Defaults to `false`.</param>
         /// <param name="filenameOverride">If set to `true` will add unique characters to name if asset with given name already exists. If overwrite flag is set to `true`, preference will be given to overwrite flag. If both are set to `false` an error will be raised.</param>
         public async Task<SignedUploadResponse?> createSignedUrlAsync(
-            string? name = null, 
-            string? path = null, 
-            string? format = null, 
-            AccessEnum? access = null, 
-            List<string>? tags = null, 
-            Dictionary<string, object>? metadata = null, 
-            bool? overwrite = null, 
+            string? name = null,
+            string? path = null,
+            string? format = null,
+            AccessEnum? access = null,
+            List<string>? tags = null,
+            Dictionary<string, object>? metadata = null,
+            bool? overwrite = null,
             bool? filenameOverride = null
         )
-        { 
-    
+        {
+
             // Body
             var body = new SignedUploadRequest();
-    
+
             if (name != null)
-            { 
+            {
                 body.name = (string?)name;
-            
-            }if (path != null)
-            { 
-                body.path = (string?)path;
-            
-            }if (format != null)
-            { 
-                body.format = (string?)format;
-            
-            }if (access != null)
-            { 
-                body.access = (AccessEnum?)access;
-            
-            }if (tags != null)
-            { 
-                body.tags = (List<string>?)tags;
-            
-            }if (metadata != null)
-            { 
-                body.metadata = (Dictionary<string, object>?)metadata;
-            
-            }if (overwrite != null)
-            { 
-                body.overwrite = (bool?)overwrite;
-            
-            }if (filenameOverride != null)
-            { 
-                body.filenameOverride = (bool?)filenameOverride;
-            
+
             }
-    
+            if (path != null)
+            {
+                body.path = (string?)path;
+
+            }
+            if (format != null)
+            {
+                body.format = (string?)format;
+
+            }
+            if (access != null)
+            {
+                body.access = (AccessEnum?)access;
+
+            }
+            if (tags != null)
+            {
+                body.tags = (List<string>?)tags;
+
+            }
+            if (metadata != null)
+            {
+                body.metadata = (Dictionary<string, object>?)metadata;
+
+            }
+            if (overwrite != null)
+            {
+                body.overwrite = (bool?)overwrite;
+
+            }
+            if (filenameOverride != null)
+            {
+                body.filenameOverride = (bool?)filenameOverride;
+
+            }
+
             // Body Validation
             JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
-    
+
             var response = await ApiClient.Execute(
                 _configuration,
                 "post",
@@ -1629,37 +1641,37 @@ namespace Pixelbin.Platform
                 body,
                 "application/json"
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<SignedUploadResponse>(response["content"].ToString());
         }
-    
+
         public SignedUploadResponse? createSignedUrl(
-            string? name = null, 
-            string? path = null, 
-            string? format = null, 
-            AccessEnum? access = null, 
-            List<string>? tags = null, 
-            Dictionary<string, object>? metadata = null, 
-            bool? overwrite = null, 
+            string? name = null,
+            string? path = null,
+            string? format = null,
+            AccessEnum? access = null,
+            List<string>? tags = null,
+            Dictionary<string, object>? metadata = null,
+            bool? overwrite = null,
             bool? filenameOverride = null
         )
         {
             return Task.Run(() => createSignedUrlAsync(
-            name:name, 
-            path:path, 
-            format:format, 
-            access:access, 
-            tags:tags, 
-            metadata:metadata, 
-            overwrite:overwrite, 
-            filenameOverride:filenameOverride)).GetAwaiter().GetResult();
+            name: name,
+            path: path,
+            format: format,
+            access: access,
+            tags: tags,
+            metadata: metadata,
+            overwrite: overwrite,
+            filenameOverride: filenameOverride)).GetAwaiter().GetResult();
         }
-    
-     
+
+
         /// <summary>
         /// Signed multipart upload
         /// </summary>
@@ -1676,62 +1688,70 @@ namespace Pixelbin.Platform
         /// <param name="filenameOverride">If set to `true` will add unique characters to name if asset with given name already exists. If overwrite flag is set to `true`, preference will be given to overwrite flag. If both are set to `false` an error will be raised.</param>
         /// <param name="expiry">Expiry time in seconds for the signed URL. Defaults to 3000 seconds.</param>
         public async Task<SignedUploadV2Response?> createSignedUrlV2Async(
-            string? name = null, 
-            string? path = null, 
-            string? format = null, 
-            AccessEnum? access = null, 
-            List<string>? tags = null, 
-            Dictionary<string, object>? metadata = null, 
-            bool? overwrite = null, 
-            bool? filenameOverride = null, 
+            string? name = null,
+            string? path = null,
+            string? format = null,
+            AccessEnum? access = null,
+            List<string>? tags = null,
+            Dictionary<string, object>? metadata = null,
+            bool? overwrite = null,
+            bool? filenameOverride = null,
             int? expiry = null
         )
-        { 
-    
+        {
+
             // Body
             var body = new SignedUploadRequestV2();
-    
+
             if (name != null)
-            { 
+            {
                 body.name = (string?)name;
-            
-            }if (path != null)
-            { 
-                body.path = (string?)path;
-            
-            }if (format != null)
-            { 
-                body.format = (string?)format;
-            
-            }if (access != null)
-            { 
-                body.access = (AccessEnum?)access;
-            
-            }if (tags != null)
-            { 
-                body.tags = (List<string>?)tags;
-            
-            }if (metadata != null)
-            { 
-                body.metadata = (Dictionary<string, object>?)metadata;
-            
-            }if (overwrite != null)
-            { 
-                body.overwrite = (bool?)overwrite;
-            
-            }if (filenameOverride != null)
-            { 
-                body.filenameOverride = (bool?)filenameOverride;
-            
-            }if (expiry != null)
-            { 
-                body.expiry = (int?)expiry;
-            
+
             }
-    
+            if (path != null)
+            {
+                body.path = (string?)path;
+
+            }
+            if (format != null)
+            {
+                body.format = (string?)format;
+
+            }
+            if (access != null)
+            {
+                body.access = (AccessEnum?)access;
+
+            }
+            if (tags != null)
+            {
+                body.tags = (List<string>?)tags;
+
+            }
+            if (metadata != null)
+            {
+                body.metadata = (Dictionary<string, object>?)metadata;
+
+            }
+            if (overwrite != null)
+            {
+                body.overwrite = (bool?)overwrite;
+
+            }
+            if (filenameOverride != null)
+            {
+                body.filenameOverride = (bool?)filenameOverride;
+
+            }
+            if (expiry != null)
+            {
+                body.expiry = (int?)expiry;
+
+            }
+
             // Body Validation
             JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body));
-    
+
             var response = await ApiClient.Execute(
                 _configuration,
                 "post",
@@ -1740,48 +1760,48 @@ namespace Pixelbin.Platform
                 body,
                 "application/json"
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<SignedUploadV2Response>(response["content"].ToString());
         }
-    
+
         public SignedUploadV2Response? createSignedUrlV2(
-            string? name = null, 
-            string? path = null, 
-            string? format = null, 
-            AccessEnum? access = null, 
-            List<string>? tags = null, 
-            Dictionary<string, object>? metadata = null, 
-            bool? overwrite = null, 
-            bool? filenameOverride = null, 
+            string? name = null,
+            string? path = null,
+            string? format = null,
+            AccessEnum? access = null,
+            List<string>? tags = null,
+            Dictionary<string, object>? metadata = null,
+            bool? overwrite = null,
+            bool? filenameOverride = null,
             int? expiry = null
         )
         {
             return Task.Run(() => createSignedUrlV2Async(
-            name:name, 
-            path:path, 
-            format:format, 
-            access:access, 
-            tags:tags, 
-            metadata:metadata, 
-            overwrite:overwrite, 
-            filenameOverride:filenameOverride, 
-            expiry:expiry)).GetAwaiter().GetResult();
+            name: name,
+            path: path,
+            format: format,
+            access: access,
+            tags: tags,
+            metadata: metadata,
+            overwrite: overwrite,
+            filenameOverride: filenameOverride,
+            expiry: expiry)).GetAwaiter().GetResult();
         }
     }
-    
+
     public class Organization
     {
         private readonly PixelbinConfig _configuration;
-    
+
         public Organization(PixelbinConfig configuration)
         {
             _configuration = configuration;
         }
-        
+
         /// <summary>
         /// Get App Details
         /// </summary>
@@ -1789,8 +1809,8 @@ namespace Pixelbin.Platform
         /// Get App and org details
         /// </remarks>
         public async Task<AppOrgDetails?> getAppOrgDetailsAsync()
-        { 
-    
+        {
+
             var response = await ApiClient.Execute<object>(
                 _configuration,
                 "get",
@@ -1799,14 +1819,14 @@ namespace Pixelbin.Platform
                 null,
                 ""
             );
-    
+
             if ((int)response["status_code"] != 200)
             {
                 throw new PDKServerResponseError(response["content"].ToString());
             }
             return JsonConvert.DeserializeObject<AppOrgDetails>(response["content"].ToString());
         }
-    
+
         public AppOrgDetails? getAppOrgDetails()
         {
             return Task.Run(() => getAppOrgDetailsAsync()).GetAwaiter().GetResult();

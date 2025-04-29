@@ -129,7 +129,8 @@ namespace Pixelbin.Common
                                         content.Add(new ByteArrayContent(value), "file", name);
                                     }
                                 }
-                            } else if (dataContent is StreamContent)
+                            }
+                            else if (dataContent is StreamContent)
                             {
                                 var value = dataContent.ReadAsStreamAsync().Result;
                                 if (name == "file")
@@ -161,7 +162,8 @@ namespace Pixelbin.Common
                                 data_without_file.Add(dataContent.Headers.ContentDisposition.Name, dataContent.ReadAsStringAsync().Result);
                             }
                         }
-                    } else
+                    }
+                    else
                     {
                         data_without_file = data.GetType().GetProperties()
                             .Where(x => x.Name != "file")

@@ -1,0 +1,34 @@
+name: Publish NuGet Package
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+          
+      - name: Install tools
+        run: dotnet tool install -g dotnet-format
+          
+      - name: Build and analyze
+        run: |
+          dotnet format --verify-no-changes
+          dotnet build
+          
+      - name: Pack
+        run: dotnet pack -c Release
+        
+      - name: Publish to NuGet
+        env:
+          NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
+        run: |
+          dotnet nuget push "PixelBin/bin/Release/*.nupkg" \
+          --api-key $NUGET_TOKEN \
+          --source https://api.nuget.org/v3/index.json

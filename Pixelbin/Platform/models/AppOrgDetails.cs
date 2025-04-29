@@ -11,11 +11,12 @@ namespace Pixelbin.Platform.Models
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class AppOrgDetails
     {
-        
+
         public AppSchema? app { get; set; }
         public OrganizationDetailSchema? org { get; set; }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return JsonConvert.SerializeObject(this);
         }
     }

@@ -11,11 +11,12 @@ namespace Pixelbin.Platform.Models
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class GetPresetsResponse
     {
-        
+
         public List<AddPresetResponse>? items { get; set; }
         public Page? page { get; set; }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return JsonConvert.SerializeObject(this);
         }
     }

@@ -11,12 +11,13 @@ namespace Pixelbin.Platform.Models
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     internal class AddPresetRequest
     {
-        
+
         public string? presetName { get; set; }
         public string? transformation { get; set; }
         public Dictionary<string, object>? @params { get; set; }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return JsonConvert.SerializeObject(this);
         }
     }

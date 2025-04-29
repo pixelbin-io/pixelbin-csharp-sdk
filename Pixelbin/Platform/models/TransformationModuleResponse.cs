@@ -11,7 +11,7 @@ namespace Pixelbin.Platform.Models
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class TransformationModuleResponse
     {
-        
+
         public string? identifier { get; set; }
         public string? name { get; set; }
         public string? description { get; set; }
@@ -19,7 +19,8 @@ namespace Pixelbin.Platform.Models
         public List<Dictionary<string, object>>? operations { get; set; }
         public bool? enabled { get; set; }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return JsonConvert.SerializeObject(this);
         }
     }

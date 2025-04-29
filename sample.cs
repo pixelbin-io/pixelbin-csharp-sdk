@@ -9,7 +9,8 @@ namespace Sample
     {
         async void Main(string[] args)
         {
-            PixelbinConfig config = new PixelbinConfig(new Dictionary<string, string>(){
+            PixelbinConfig config = new PixelbinConfig(new Dictionary<string, string>()
+            {
                 "domain" = "https://api.pixelbin.io",
                 "apiSecret" = "API_TOKEN"
             });
